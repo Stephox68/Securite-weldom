@@ -703,6 +703,7 @@
     statusFilter: null,      // 'ok' | 'warn' | 'danger' — pour la vue transverse par statut
     editingHistoryId: null,
     editingCategoryLabel: null,
+    editingAccountUsername: null,
     tab: 'tous',            // tous | ok | warn | danger
     search: '',
     typeSearch: '',
@@ -1260,11 +1261,14 @@
       <div class="sfi-card" style="cursor:default;">
         <div class="sfi-card-top">
           <div>
-            <div class="sfi-card-name">${escapeHtml(a.username)}</div>
+            <div class="sfi-card-name">${escapeHtml(a.username)}${a.username === state.session.username ? ' (toi)' : ''}</div>
             <div class="sfi-card-zone">${a.role === 'admin' ? 'Administrateur — tous les magasins' : escapeHtml(a.magasin || '—')}</div>
             <div class="sfi-card-zone">Code : ${escapeHtml(a.pin)}</div>
           </div>
-          ${a.username === state.session.username ? '' : `<button class="sfi-btn ghost" style="flex:none; padding:8px 10px; font-size:11.5px;" data-delete-account="${escapeHtml(a.username)}">Supprimer</button>`}
+          <div style="display:flex; gap:6px; flex-shrink:0;">
+            <button class="sfi-btn ghost" style="padding:8px 10px; font-size:11.5px;" data-edit-pin="${escapeHtml(a.username)}">Modifier le code</button>
+            ${a.username === state.session.username ? '' : `<button class="sfi-btn ghost" style="padding:8px 10px; font-size:11.5px;" data-delete-account="${escapeHtml(a.username)}">Supprimer</button>`}
+          </div>
         </div>
       </div>`).join('');
 
@@ -1279,6 +1283,7 @@
       </div>
       <button class="sfi-fab" data-new-account title="Ajouter un compte">+</button>
       ${state.sheet === 'add-account' ? renderAddAccountSheet() : ''}
+      ${state.sheet === 'edit-pin' ? renderEditPinSheet(state.editingAccountUsername) : ''}
       ${state.toast ? `<div class="sfi-toast">${escapeHtml(state.toast)}</div>` : ''}
     `;
   }
@@ -1326,6 +1331,25 @@
         <div class="sfi-sheet-actions">
           <button class="sfi-btn ghost" data-close-sheet>Annuler</button>
           <button class="sfi-btn primary" data-save-account>Ajouter</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function renderEditPinSheet(username) {
+    const acc = db.accounts.find(a => a.username === username);
+    if (!acc) return '';
+    return `
+    <div class="sfi-overlay" data-close-sheet>
+      <div class="sfi-sheet" onclick="event.stopPropagation()">
+        <h3>Modifier le code — ${escapeHtml(acc.username)}</h3>
+        <div class="sfi-field">
+          <label>Nouveau code</label>
+          <input type="text" id="ep-pin" inputmode="numeric" placeholder="4 chiffres" maxlength="6" value="${escapeHtml(acc.pin)}" autofocus />
+        </div>
+        <div class="sfi-sheet-actions">
+          <button class="sfi-btn ghost" data-close-sheet>Annuler</button>
+          <button class="sfi-btn primary" data-save-pin>Enregistrer</button>
         </div>
       </div>
     </div>`;
@@ -2283,6 +2307,21 @@
 
     const newAccountBtn = root.querySelector('[data-new-account]');
     if (newAccountBtn) newAccountBtn.onclick = () => { state.sheet = 'add-account'; render(); };
+
+    root.querySelectorAll('[data-edit-pin]').forEach(el => {
+      el.onclick = () => { state.editingAccountUsername = el.getAttribute('data-edit-pin'); state.sheet = 'edit-pin'; render(); };
+    });
+    const savePinBtn = root.querySelector('[data-save-pin]');
+    if (savePinBtn) savePinBtn.onclick = async () => {
+      const pin = root.querySelector('#ep-pin').value.trim();
+      if (!pin) { showToast('Le code est requis.'); return; }
+      const acc = db.accounts.find(a => a.username === state.editingAccountUsername);
+      if (acc) acc.pin = pin;
+      state.sheet = null;
+      state.editingAccountUsername = null;
+      await saveDB();
+      showToast('Code mis à jour.');
+    };
 
     const newCategoryBtn = root.querySelector('[data-new-category]');
     if (newCategoryBtn) newCategoryBtn.onclick = () => { state.sheet = 'add-category'; render(); };
