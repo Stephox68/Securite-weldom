@@ -749,170 +749,13 @@
   const root = document.getElementById('sfi-root');
 
   function seed() {
-    const now = new Date();
-    const iso = (d) => d.toISOString().slice(0,10);
-    const monthsAgo = (n) => { const d = new Date(now); d.setMonth(d.getMonth()-n); return iso(d); };
-    const monthsAheadIso = (n) => { const d = new Date(now); d.setMonth(d.getMonth()+n); return iso(d); };
-
     db.types = JSON.parse(JSON.stringify(DEFAULT_TYPES));
-
-    const ZONE_BY_TYPE = {
-      'Extincteur': 'Magasin',
-      'RIA (robinet incendie armé)': 'Magasin',
-      'SSI incendie (système sécurité incendie)': 'Bureaux',
-      'Désenfumage': 'Dépôt',
-      'Portes coupe-feu': 'Réserve',
-      'Portes automatiques vitrées': 'Magasin',
-      'Portes sectionnelles': 'Dépôt',
-      'Défibrillateur (DAE)': 'Magasin',
-      'Source centrale éclairage sécurité': 'Bureaux',
-      'BAES (blocs autonomes éclairage sécurité)': 'Magasin',
-      'Alarme intrusion': 'Bureaux',
-      'Vidéosurveillance': 'Magasin',
-      'Scie à panneau': 'Atelier / logistique',
-      'Presse à carton': 'Réserve',
-      'Chariot élévateur': 'Atelier / logistique',
-      'Gerbeur': 'Atelier / logistique',
-      'Tire-palette électrique': 'Réserve',
-      'Contrôle batteries (chariot/gerbeur)': 'Atelier / logistique',
-    };
-    const PREFIX_BY_TYPE = {
-      'Extincteur': 'EXT',
-      'RIA (robinet incendie armé)': 'RIA',
-      'SSI incendie (système sécurité incendie)': 'SSI',
-      'Désenfumage': 'DSF',
-      'Portes coupe-feu': 'PCF',
-      'Portes automatiques vitrées': 'PAV',
-      'Portes sectionnelles': 'PS',
-      'Défibrillateur (DAE)': 'DAE',
-      'Source centrale éclairage sécurité': 'SCE',
-      'BAES (blocs autonomes éclairage sécurité)': 'BAES',
-      'Alarme intrusion': 'INT',
-      'Vidéosurveillance': 'VS',
-      'Scie à panneau': 'SCP',
-      'Presse à carton': 'PRC',
-      'Chariot élévateur': 'CHE',
-      'Gerbeur': 'GER',
-      'Tire-palette électrique': 'TPE',
-      'Contrôle batteries (chariot/gerbeur)': 'BAT',
-    };
-    const OK_COMMENTS = ['RAS, contrôle conforme.', 'Rien à signaler.', 'Contrôle visuel + fonctionnel OK.', 'Conforme, aucune remarque.'];
-    const PANNE_COMMENTS = ['Anomalie constatée, prestataire à programmer.', 'Défaut détecté lors du contrôle, à surveiller.', 'Panne signalée par l\'équipe magasin.', 'Non conforme, réparation en attente.'];
-
     db.equipements = [];
     db.interventions = [];
-    let iCounter = 1;
-
-    const daysAgo = (n) => { const d = new Date(now); d.setDate(d.getDate() - Math.round(n)); return iso(d); };
-    const agoFn = (freq) => (freq < 1 ? daysAgo : monthsAgo);
-    const toUnit = (freq, months) => (freq < 1 ? months * 30 : months); // convertit un décalage "en mois" en jours si cycle court
-
-    Object.keys(ZONE_BY_TYPE).forEach((typeLabel, tIdx) => {
-      const t = db.types.find(x => x.label === typeLabel);
-      const freq = t.freq;
-      const prefix = PREFIX_BY_TYPE[typeLabel];
-      const zone = ZONE_BY_TYPE[typeLabel];
-      const ago = agoFn(freq);
-      // 4 déclinaisons par type, une par magasin, avec des situations différentes
-      const variants = [
-        {suffix: '1', lastVerifAgo: toUnit(freq, freq < 1 ? freq * 0.2 : 1), panne: false},          // à jour, contrôlé récemment
-        {suffix: '2', lastVerifAgo: toUnit(freq, Math.max(freq - (freq < 1 ? freq * 0.2 : 1), 0)), panne: false}, // échéance proche
-        {suffix: '3', lastVerifAgo: toUnit(freq, freq + (freq < 1 ? freq * 2 : 2)), panne: false},   // en retard
-        {suffix: '4', lastVerifAgo: null, panne: false},                                              // jamais contrôlé
-      ];
-      // Un type sur trois reçoit en plus une panne active sur son 3e exemplaire, pour varier
-      if (tIdx % 3 === 0) { variants[2].panne = true; }
-
-      variants.forEach((v, vIdx) => {
-        const magasin = MAGASINS[(tIdx + vIdx) % MAGASINS.length];
-        const id = `${prefix}-${v.suffix}`;
-        db.equipements.push({id, nom: `${typeLabel.split(' (')[0]} ${v.suffix}`, type: typeLabel, zone, magasin, freq, rappelMois: t.rappelDefaut || 6, createdAt: monthsAgo(24), source: 'demo'});
-        if (v.lastVerifAgo !== null) {
-          db.interventions.push({
-            id: 'i' + (iCounter++), equipementId: id, date: ago(v.lastVerifAgo), type: 'verif_ok',
-            commentaire: OK_COMMENTS[(tIdx + vIdx) % OK_COMMENTS.length], auteur: 'Équipe ' + magasin
-          });
-        }
-        if (v.panne) {
-          db.interventions.push({
-            id: 'i' + (iCounter++), equipementId: id, date: ago(toUnit(freq, freq < 1 ? freq * 0.3 : 1)), type: 'panne',
-            commentaire: PANNE_COMMENTS[tIdx % PANNE_COMMENTS.length], auteur: 'Équipe ' + magasin
-          });
-        }
-      });
-    });
-
-    // ---------- Habilitations / formations personnel ----------
-    const NAMES = ['Julien Meyer','Claire Weiss','Karim Boudjema','Thomas Reber','Sophie Klein','Nicolas Muller',
-      'Léa Fischer','Antoine Braun','Camille Ott','Maxime Roth','Julie Baumann','Yanis Kohler','Sarah Zimmer','Paul Herrmann'];
-    let nameIdx = 0;
-    const nextName = () => NAMES[(nameIdx++) % NAMES.length];
-
     db.habilitations = [];
-    let hCounter = 1;
-    const personnelTypes = db.types.filter(t => t.category === 'personnel');
-
-    personnelTypes.forEach((t, tIdx) => {
-      const freq = t.freq;
-      const rappel = t.rappelDefaut || 6;
-      // 4 collaborateurs par habilitation, un par magasin, avec des échéances variées
-      const cases = [
-        {situation: 'ok',      obtMonthsAgo: 6,              expMonthsAhead: freq - 6},
-        {situation: 'warn',    obtMonthsAgo: freq - (rappel - 1), expMonthsAhead: rappel - 1},
-        {situation: 'danger',  obtMonthsAgo: freq + 3,        expMonthsAhead: -3},
-        {situation: 'renewed', obtMonthsAgo: 2,               expMonthsAhead: freq - 2, priorObtMonthsAgo: freq + 10, priorExpMonthsAgo: 10},
-      ];
-      cases.forEach((c, cIdx) => {
-        const collaborateur = nextName();
-        const magasin = MAGASINS[(tIdx + cIdx) % MAGASINS.length];
-        // Pour le cas "renewed", on ajoute un premier cycle déjà expiré avant le cycle en cours
-        if (c.priorObtMonthsAgo) {
-          db.habilitations.push({
-            id: 'h' + (hCounter++), type: t.label, collaborateur, magasin,
-            dateObtention: monthsAgo(c.priorObtMonthsAgo), dateExpiration: monthsAgo(c.priorExpMonthsAgo),
-            rappelMois: rappel, commentaire: 'Premier cycle.', auteur: 'Équipe ' + magasin, source: 'demo'
-          });
-        }
-        db.habilitations.push({
-          id: 'h' + (hCounter++), type: t.label, collaborateur, magasin,
-          dateObtention: monthsAgo(c.obtMonthsAgo),
-          dateExpiration: c.expMonthsAhead >= 0 ? monthsAheadIso(c.expMonthsAhead) : monthsAgo(-c.expMonthsAhead),
-          rappelMois: rappel,
-          commentaire: c.situation === 'renewed' ? 'Renouvellement effectué.' : '',
-          auteur: 'Équipe ' + magasin, source: 'demo'
-        });
-      });
-    });
-
-    if (!db.accounts || db.accounts.length === 0) {
-      db.accounts = defaultAccounts();
-    }
-  }
-
-  function defaultAccounts() {
-    return [
-      {username:'admin', pin:'0000', role:'admin', magasin:null},
-      {username:'hesingue', pin:'1111', role:'user', magasin:'Hésingue'},
-      {username:'sierentz', pin:'2222', role:'user', magasin:'Sierentz'},
-      {username:'waldighoffen', pin:'3333', role:'user', magasin:'Waldighoffen'},
-      {username:'mulhouse', pin:'4444', role:'user', magasin:'Mulhouse'},
-    ];
-  }
-
-  // Import des données réelles du registre "Suivi annuel sécurité magasin 2026-2027" — Hésingue.
-  // Idempotent : peut être relancé sans dupliquer (les entrées précédemment importées sont retirées avant réinsertion).
-  function importHesingueReel() {
-    const MAG = 'Hésingue';
-    const SRC = 'hesingue-2026';
-
-    // Retire toute donnée de démo (tous magasins confondus) + un éventuel import précédent,
-    // pour ne garder que du réel. Les autres magasins resteront vides tant qu'ils n'ont pas
-    // leurs propres données réelles importées.
-    db.equipements = db.equipements.filter(e => e.source !== 'demo' && e.source !== SRC);
-    db.habilitations = db.habilitations.filter(h => h.source !== 'demo' && h.source !== SRC);
 
     const eq = (id, nom, type, zone, freq, freqOverride, events) => {
-      db.equipements.push({id, nom, type, zone, magasin: MAG, freq: freqOverride || freq, rappelMois: 6, createdAt: '2019-09-30', source: SRC});
+      db.equipements.push({id, nom, type, zone, magasin: 'Hésingue', freq: freqOverride || freq, rappelMois: 6, createdAt: '2019-09-30'});
       events.forEach((ev, idx) => {
         db.interventions.push({id: 'imp-' + id + '-' + idx, equipementId: id, date: ev.date, type: ev.type, commentaire: ev.commentaire, auteur: ev.auteur || 'Registre sécurité'});
       });
@@ -982,14 +825,27 @@
       const exp = new Date(obt); exp.setMonth(exp.getMonth() + 36);
       session.noms.forEach(collaborateur => {
         db.habilitations.push({
-          id: 'imp-h' + (hCounter++), type: 'Formation extincteurs (personnel)', collaborateur, magasin: MAG,
+          id: 'h' + (hCounter++), type: 'Formation extincteurs (personnel)', collaborateur, magasin: 'Hésingue',
           dateObtention: session.date, dateExpiration: exp.toISOString().slice(0,10),
-          rappelMois: 6, commentaire: 'Formation théorique + pratique extincteurs.', auteur: 'Registre sécurité', source: SRC
+          rappelMois: 6, commentaire: 'Formation théorique + pratique extincteurs.', auteur: 'Registre sécurité'
         });
       });
     });
+
+    if (!db.accounts || db.accounts.length === 0) {
+      db.accounts = defaultAccounts();
+    }
   }
 
+  function defaultAccounts() {
+    return [
+      {username:'admin', pin:'0000', role:'admin', magasin:null},
+      {username:'hesingue', pin:'1111', role:'user', magasin:'Hésingue'},
+      {username:'sierentz', pin:'2222', role:'user', magasin:'Sierentz'},
+      {username:'waldighoffen', pin:'3333', role:'user', magasin:'Waldighoffen'},
+      {username:'mulhouse', pin:'4444', role:'user', magasin:'Mulhouse'},
+    ];
+  }
   async function loadSession() {
     try {
       const res = await storageAPI.get(SESSION_KEY, false);
@@ -1420,28 +1276,9 @@
       </div>
       <div class="sfi-list" style="position:relative;">
         ${rows}
-        <div class="sfi-section-label">Zone technique</div>
-        <button class="sfi-btn ghost" style="width:100%; margin-bottom:8px;" data-reset-demo>Réinitialiser avec les données de démo</button>
-        <p style="font-size:11px; color:var(--ink-soft); line-height:1.5; margin-bottom:12px;">
-          Efface toutes les données actuelles (équipements, historique, habilitations) et les remplace par un jeu d'exemples varié. Les comptes créés manuellement sont conservés.
-        </p>
-        <button class="sfi-btn ghost" style="width:100%; margin-bottom:8px;" data-import-hesingue>Importer les données réelles Hésingue</button>
-        <p style="font-size:11px; color:var(--ink-soft); line-height:1.5;">
-          Charge le registre de sécurité 2026-2027 (extincteurs, RIA, désenfumage, SSI, chariots élévateurs, formations extincteurs...) à la place des données de démo pour le magasin Hésingue uniquement. Peut être relancé sans dupliquer.
-        </p>
       </div>
       <button class="sfi-fab" data-new-account title="Ajouter un compte">+</button>
       ${state.sheet === 'add-account' ? renderAddAccountSheet() : ''}
-      ${state.sheet === 'confirm-reset-demo' ? renderConfirmSheet(
-          'Réinitialiser les données ?',
-          'Toutes les données actuelles (équipements, historique, habilitations) seront effacées et remplacées par un jeu d\'exemples varié. Les comptes créés manuellement sont conservés. Cette action est irréversible.',
-          'data-confirm-reset-demo', 'Réinitialiser'
-        ) : ''}
-      ${state.sheet === 'confirm-import-hesingue' ? renderConfirmSheet(
-          'Importer les données Hésingue ?',
-          'Le registre de sécurité réel (extincteurs, RIA, désenfumage, SSI, chariots élévateurs, formations extincteurs...) remplacera les données de démo du magasin Hésingue. Peut être relancé sans dupliquer.',
-          'data-confirm-import-hesingue', 'Importer'
-        ) : ''}
       ${state.toast ? `<div class="sfi-toast">${escapeHtml(state.toast)}</div>` : ''}
     `;
   }
@@ -2489,31 +2326,6 @@
       state.editingCategoryLabel = null;
       await saveDB();
       showToast('Catégorie supprimée.');
-    };
-
-    const resetDemoBtn = root.querySelector('[data-reset-demo]');
-    if (resetDemoBtn) resetDemoBtn.onclick = () => { state.sheet = 'confirm-reset-demo'; render(); };
-    const confirmResetBtn = root.querySelector('[data-confirm-reset-demo]');
-    if (confirmResetBtn) confirmResetBtn.onclick = async () => {
-      seed();
-      await saveDB();
-      state.sheet = null;
-      showToast('Données de démo rechargées.');
-      render();
-    };
-
-    const importHesingueBtn = root.querySelector('[data-import-hesingue]');
-    if (importHesingueBtn) importHesingueBtn.onclick = () => { state.sheet = 'confirm-import-hesingue'; render(); };
-    const confirmImportBtn = root.querySelector('[data-confirm-import-hesingue]');
-    if (confirmImportBtn) confirmImportBtn.onclick = async () => {
-      importHesingueReel();
-      await saveDB();
-      state.sheet = null;
-      state.adminScope = 'Hésingue';
-      state.view = 'types';
-      state.currentType = null; state.currentId = null; state.currentCollab = null;
-      showToast('Données Hésingue importées.');
-      render();
     };
 
     const roleSelect = root.querySelector('#a-role');
