@@ -1,0 +1,2860 @@
+<!-- Sécurité & Incendie — Weldom Sierentz -->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap');
+
+  :root {
+    --amber: #F5A300;
+    --amber-deep: #C97F00;
+    --charcoal: #1C1B19;
+    --charcoal-soft: #2A2825;
+    --cream: #FAF8F3;
+    --paper: #FFFFFF;
+    --ink: #262421;
+    --ink-soft: #6B6558;
+    --ok: #2F7D45;
+    --ok-bg: #E9F4EC;
+    --danger: #C43D3D;
+    --danger-bg: #FBEAEA;
+    --warn: #C97F00;
+    --warn-bg: #FDF2DF;
+    --line: #E5DFD1;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; }
+
+  #sfi-root {
+    font-family: 'Work Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 600px;
+    max-width: 480px;
+    margin: 0 auto;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sfi-header {
+    background: var(--charcoal);
+    color: var(--cream);
+    padding: 18px 18px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .sfi-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sfi-brand-mark {
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    background: var(--charcoal-soft);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .sfi-brand-text h1 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    margin: 0;
+    line-height: 1.1;
+  }
+  .sfi-brand-text p {
+    margin: 2px 0 0;
+    font-size: 11px;
+    color: #B8B2A2;
+    letter-spacing: 0.03em;
+  }
+  .sfi-scan-btn {
+    background: var(--amber);
+    color: var(--charcoal);
+    border: none;
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    display: flex; align-items: center; gap: 6px;
+    cursor: pointer;
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .sfi-scan-btn:active { background: var(--amber-deep); }
+
+  .sfi-stats {
+    display: flex;
+    gap: 8px;
+    padding: 14px 16px 4px;
+  }
+  .sfi-stat {
+    flex: 1;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 10px 8px;
+    text-align: center;
+    cursor: pointer;
+  }
+  .sfi-stat:active { background: #FBF9F4; }
+  .sfi-stat b {
+    display: block;
+    font-family: 'Oswald', sans-serif;
+    font-size: 22px;
+    line-height: 1;
+  }
+  .sfi-stat span {
+    font-size: 10px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .sfi-stat.st-ok b { color: var(--ok); }
+  .sfi-stat.st-warn b { color: var(--warn); }
+  .sfi-stat.st-danger b { color: var(--danger); }
+
+  .sfi-tabs {
+    display: flex;
+    gap: 6px;
+    padding: 12px 16px 8px;
+    overflow-x: auto;
+  }
+  .sfi-tab {
+    flex-shrink: 0;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .sfi-tab.active {
+    background: var(--charcoal);
+    color: var(--cream);
+    border-color: var(--charcoal);
+  }
+
+  .sfi-search {
+    margin: 0 16px 8px;
+    display: flex;
+    gap: 8px;
+  }
+  .sfi-search input {
+    flex: 1;
+    padding: 9px 12px;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    font-family: 'Work Sans', sans-serif;
+    font-size: 13px;
+    background: var(--paper);
+  }
+  .sfi-search input:focus { outline: 2px solid var(--amber); outline-offset: -1px; }
+
+  .sfi-list {
+    flex: 1;
+    padding: 4px 16px 16px;
+    overflow-y: auto;
+  }
+
+  /* Carte façon étiquette de contrôle d'extincteur */
+  .sfi-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+  }
+  .sfi-card:active { background: #FBF9F4; }
+  .sfi-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 12px 14px 8px;
+  }
+  .sfi-card-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-soft);
+    letter-spacing: 0.02em;
+  }
+  .sfi-card-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    margin: 2px 0 0;
+  }
+  .sfi-card-zone {
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    margin-top: 1px;
+  }
+  .sfi-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 4px 9px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
+    margin-left: 8px;
+  }
+  .sfi-badge.st-ok { background: var(--ok-bg); color: var(--ok); }
+  .sfi-badge.st-warn { background: var(--warn-bg); color: var(--warn); }
+  .sfi-badge.st-danger { background: var(--danger-bg); color: var(--danger); }
+
+  /* Tuiles d'entrée par type de matériel */
+  .sfi-type-tile {
+    display: flex;
+    align-items: center;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    margin-bottom: 8px;
+    cursor: pointer;
+    overflow: hidden;
+  }
+  .sfi-type-tile:active { background: #FBF9F4; }
+  .sfi-type-bar {
+    width: 5px;
+    align-self: stretch;
+    flex-shrink: 0;
+  }
+  .sfi-type-bar.st-ok { background: var(--ok); }
+  .sfi-type-bar.st-warn { background: var(--warn); }
+  .sfi-type-bar.st-danger { background: var(--danger); }
+  .sfi-type-bar.st-empty { background: var(--line); }
+  .sfi-type-main {
+    flex: 1;
+    padding: 12px 10px;
+    min-width: 0;
+  }
+  .sfi-type-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+  .sfi-type-count {
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    margin-top: 2px;
+  }
+  .sfi-type-pills {
+    display: flex;
+    gap: 4px;
+    padding-right: 12px;
+    flex-shrink: 0;
+  }
+  .sfi-type-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 600;
+    min-width: 20px;
+    text-align: center;
+    padding: 3px 5px;
+    border-radius: 6px;
+  }
+  .sfi-type-pill.st-ok { background: var(--ok-bg); color: var(--ok); }
+  .sfi-type-pill.st-warn { background: var(--warn-bg); color: var(--warn); }
+  .sfi-type-pill.st-danger { background: var(--danger-bg); color: var(--danger); }
+  .sfi-type-pill.st-empty { background: var(--cream); color: var(--ink-soft); }
+
+  /* Bloc dates de contrôle + barre d'urgence */
+  .sfi-control-block {
+    border-top: 1px dashed var(--line);
+    padding: 10px 14px 12px;
+  }
+  .sfi-control-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    margin-bottom: 3px;
+  }
+  .sfi-control-row b {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .sfi-urgency-bar {
+    height: 5px;
+    border-radius: 3px;
+    background: var(--cream);
+    border: 1px solid var(--line);
+    overflow: hidden;
+    margin-top: 7px;
+  }
+  .sfi-urgency-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.2s ease;
+  }
+  .sfi-urgency-fill.st-ok { background: var(--ok); }
+  .sfi-urgency-fill.st-warn { background: var(--warn); }
+  .sfi-urgency-fill.st-danger { background: var(--danger); }
+  .sfi-urgency-label {
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 5px;
+  }
+  .sfi-urgency-label.st-ok { color: var(--ok); }
+  .sfi-urgency-label.st-warn { color: var(--warn); }
+  .sfi-urgency-label.st-danger { color: var(--danger); }
+
+  .sfi-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--ink-soft);
+    font-size: 13px;
+  }
+
+  .sfi-fab {
+    position: absolute;
+    bottom: 16px; right: 16px;
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: var(--amber);
+    color: var(--charcoal);
+    border: none;
+    font-size: 24px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.18);
+    cursor: pointer;
+  }
+
+  /* Détail équipement */
+  .sfi-detail-header {
+    background: var(--charcoal);
+    color: var(--cream);
+    padding: 16px 16px 14px;
+  }
+  .sfi-back {
+    background: none; border: none; color: var(--amber);
+    font-size: 13px; font-weight: 600; padding: 0 0 10px; cursor: pointer;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .sfi-detail-header h2 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 19px;
+    margin: 0 0 3px;
+  }
+  .sfi-detail-header p { margin: 0; font-size: 12px; color: #B8B2A2; }
+
+  .sfi-detail-body { padding: 14px 16px; overflow-y: auto; flex: 1; }
+
+  .sfi-section-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+    font-weight: 600;
+    margin: 16px 0 8px;
+  }
+  .sfi-section-label:first-child { margin-top: 0; }
+
+  .sfi-action-row { display: flex; gap: 8px; }
+  .sfi-action-btn {
+    flex: 1;
+    border-radius: var(--radius);
+    border: none;
+    padding: 12px 8px;
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 600;
+    font-size: 12.5px;
+    cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .sfi-action-btn.ok { background: var(--ok-bg); color: var(--ok); }
+  .sfi-action-btn.panne { background: var(--danger-bg); color: var(--danger); }
+
+  .sfi-history-item {
+    border-left: 2px solid var(--line);
+    padding: 2px 0 14px 14px;
+    position: relative;
+  }
+  .sfi-history-item::before {
+    content: '';
+    position: absolute;
+    left: -5px; top: 3px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--ink-soft);
+  }
+  .sfi-history-item.ok::before { background: var(--ok); }
+  .sfi-history-item.panne::before { background: var(--danger); }
+  .sfi-history-item .h-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+  }
+  .sfi-history-item .h-label {
+    font-size: 13px;
+    font-weight: 600;
+    margin: 2px 0;
+  }
+  .sfi-history-item .h-comment {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    line-height: 1.4;
+  }
+  .sfi-history-item .h-author {
+    font-size: 11px;
+    color: var(--ink-soft);
+    margin-top: 2px;
+    font-style: italic;
+  }
+
+  /* Modales / formulaires */
+  .sfi-overlay {
+    position: absolute; inset: 0;
+    background: rgba(28,27,25,0.55);
+    display: flex; align-items: flex-end;
+    z-index: 20;
+  }
+  .sfi-sheet {
+    background: var(--cream);
+    width: 100%;
+    border-radius: 16px 16px 0 0;
+    padding: 18px 18px 20px;
+    max-height: 88%;
+    overflow-y: auto;
+  }
+  .sfi-sheet h3 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 17px;
+    margin: 0 0 14px;
+  }
+  .sfi-field { margin-bottom: 12px; }
+  .sfi-field label {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin-bottom: 5px;
+  }
+  .sfi-field input, .sfi-field select, .sfi-field textarea {
+    width: 100%;
+    padding: 10px 11px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    font-family: 'Work Sans', sans-serif;
+    font-size: 13.5px;
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .sfi-field textarea { resize: vertical; min-height: 60px; }
+  .sfi-field input:focus, .sfi-field select:focus, .sfi-field textarea:focus {
+    outline: 2px solid var(--amber); outline-offset: -1px;
+  }
+  .sfi-sheet-actions { display: flex; gap: 8px; margin-top: 16px; }
+  .sfi-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    font-size: 13.5px;
+    cursor: pointer;
+    font-family: 'Work Sans', sans-serif;
+  }
+  .sfi-btn.primary { background: var(--charcoal); color: var(--cream); }
+  .sfi-btn.ghost { background: var(--paper); color: var(--ink); border: 1px solid var(--line); }
+
+  .sfi-toast {
+    position: absolute;
+    bottom: 18px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--charcoal);
+    color: var(--cream);
+    padding: 9px 16px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    z-index: 30;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+  }
+
+  .sfi-loading {
+    display: flex; align-items: center; justify-content: center;
+    height: 400px; color: var(--ink-soft); font-size: 13px;
+  }
+
+  .sfi-photo-preview {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+  }
+  .sfi-photo-preview img {
+    max-width: 100%;
+    max-height: 160px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    display: block;
+  }
+  .sfi-photo-remove {
+    position: absolute;
+    top: -7px; right: -7px;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--charcoal);
+    color: var(--cream);
+    border: none;
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .sfi-photo-link {
+    background: none;
+    border: none;
+    color: var(--amber-deep);
+    font-weight: 600;
+    font-size: 12px;
+    padding: 0;
+    margin-top: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .sfi-lightbox {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 40;
+    padding: 20px;
+  }
+  .sfi-lightbox img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 8px;
+  }
+  .sfi-lightbox-close {
+    position: absolute;
+    top: 14px; right: 14px;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+  }
+
+  .sfi-profile-btn {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .sfi-profile-btn:active { background: #FBF9F4; }
+  .sfi-profile-btn.admin {
+    background: var(--charcoal);
+    color: var(--cream);
+    border-color: var(--charcoal);
+  }
+
+  .sfi-scope-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px 8px;
+    font-size: 11.5px;
+    color: var(--ink-soft);
+  }
+  .sfi-scope-row button {
+    background: none;
+    border: none;
+    color: var(--amber-deep);
+    font-weight: 600;
+    font-size: 11.5px;
+    cursor: pointer;
+    padding: 0;
+  }
+  .sfi-store-pill {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    background: var(--cream);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 1px 5px;
+    margin-top: 3px;
+  }
+
+  .sfi-store-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 2px 6px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--amber-deep);
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 8px;
+  }
+  .sfi-store-heading:first-child { padding-top: 0; }
+  .sfi-store-heading-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--ink-soft);
+    text-transform: none;
+    letter-spacing: 0;
+  }
+</style>
+
+<div id="sfi-root"></div>
+
+<script>
+(function() {
+  // Stockage : utilise window.storage dans un artefact Claude (partagé entre utilisateurs),
+  // ou un repli sur localStorage du navigateur si l'appli tourne ailleurs (ex: GitHub Pages).
+  // Le repli n'est PAS partagé entre appareils/collègues — utile pour un test solo hors Claude.
+  const storageAPI = (typeof window !== 'undefined' && window.storage) ? window.storage : {
+    async get(key) {
+      const raw = localStorage.getItem('sfi-local-' + key);
+      if (raw === null) throw new Error('clé introuvable');
+      return { key, value: raw };
+    },
+    async set(key, value) {
+      localStorage.setItem('sfi-local-' + key, value);
+      return { key, value };
+    },
+    async delete(key) {
+      localStorage.removeItem('sfi-local-' + key);
+      return { key, deleted: true };
+    },
+    async list(prefix) {
+      const p = 'sfi-local-' + (prefix || '');
+      const keys = Object.keys(localStorage).filter(k => k.startsWith(p)).map(k => k.slice('sfi-local-'.length));
+      return { keys, prefix };
+    }
+  };
+
+  const STORAGE_KEY = 'sfi-data-v1';
+  const DEFAULT_TYPES = [
+    {label: 'Extincteur', freq: 12, category: 'equipement', rappelDefaut: 6},
+    {label: 'RIA (robinet incendie armé)', freq: 12, category: 'equipement', rappelDefaut: 6},
+    {label: 'SSI incendie (système sécurité incendie)', freq: 12, category: 'equipement', rappelDefaut: 6},
+    {label: 'Désenfumage', freq: 6, category: 'equipement', rappelDefaut: 6},
+    {label: 'Portes coupe-feu', freq: 12, category: 'equipement', rappelDefaut: 6},
+    {label: 'Portes automatiques vitrées', freq: 12, category: 'equipement', rappelDefaut: 6},
+    {label: 'Portes sectionnelles', freq: 12, category: 'equipement', rappelDefaut: 6},
+    {label: 'Défibrillateur (DAE)', freq: 3, category: 'equipement', rappelDefaut: 6},
+    {label: 'Source centrale éclairage sécurité', freq: 12, category: 'equipement', rappelDefaut: 6},
+    {label: 'BAES (blocs autonomes éclairage sécurité)', freq: 6, category: 'equipement', rappelDefaut: 6},
+    {label: 'Alarme intrusion', freq: 12, category: 'equipement', rappelDefaut: 6},
+    {label: 'Vidéosurveillance', freq: 12, category: 'equipement', rappelDefaut: 6},
+    {label: 'Scie à panneau', freq: 12, category: 'equipement', rappelDefaut: 6},
+    {label: 'Presse à carton', freq: 12, category: 'equipement', rappelDefaut: 6},
+    {label: 'Chariot élévateur', freq: 6, category: 'equipement', rappelDefaut: 6},
+    {label: 'Gerbeur', freq: 6, category: 'equipement', rappelDefaut: 6},
+    {label: 'Tire-palette électrique', freq: 12, category: 'equipement', rappelDefaut: 6},
+    {label: 'Contrôle batteries (chariot/gerbeur)', freq: 0.25, category: 'equipement', rappelDefaut: 6},
+    {label: 'Chauffage / ventilation', freq: 12, category: 'equipement', rappelDefaut: 6},
+    {label: 'Installation gaz', freq: 12, category: 'equipement', rappelDefaut: 6},
+    {label: 'Installations électriques', freq: 12, category: 'equipement', rappelDefaut: 6},
+    {label: 'Compacteur / presse à déchets', freq: 12, category: 'equipement', rappelDefaut: 6},
+    {label: 'Commission de sécurité (SDIS)', freq: 36, category: 'equipement', rappelDefaut: 6},
+    {label: 'Autres contrôles techniques', freq: 12, category: 'equipement', rappelDefaut: 6},
+    {label: 'Formation extincteurs (personnel)', freq: 36, category: 'personnel', rappelDefaut: 6},
+    {label: 'Certiphyto (personnel)', freq: 60, category: 'personnel', rappelDefaut: 6},
+    {label: 'CACES 3 (personnel)', freq: 60, category: 'personnel', rappelDefaut: 6},
+    {label: 'CACES 2B (personnel)', freq: 60, category: 'personnel', rappelDefaut: 6},
+    {label: 'Habilitation électrique B0 (personnel)', freq: 36, category: 'personnel', rappelDefaut: 6},
+    {label: 'Habilitation électrique BS/BE (personnel)', freq: 36, category: 'personnel', rappelDefaut: 6},
+  ];
+  const ZONES = ['Magasin', 'Réserve', 'Bureaux', 'Extérieur', 'Dépôt', 'Atelier / logistique', 'Personnel'];
+
+  // Fréquences par défaut à titre indicatif (usages courants) — à ajuster selon
+  // le classement ERP du magasin et les préconisations de ton prestataire/organisme agréé.
+
+  const MAGASINS = ['Hésingue', 'Sierentz', 'Waldighoffen', 'Mulhouse'];
+  const SESSION_KEY = 'sfi-session-v1';
+
+  let state = {
+    view: 'types',           // types | list | detail | habList | habDetail | accounts | statusList
+    statusFilter: null,      // 'ok' | 'warn' | 'danger' — pour la vue transverse par statut
+    editingHistoryId: null,
+    editingCategoryLabel: null,
+    tab: 'tous',            // tous | ok | warn | danger
+    search: '',
+    typeSearch: '',
+    currentType: null,
+    currentId: null,
+    currentCollab: null,
+    sheet: null,            // null | 'add-equip' | 'verif' | 'panne' | 'add-hab' | 'renew-hab' | 'add-account'
+    toast: null,
+    loading: true,
+    session: undefined,     // undefined = pas encore chargé, null = pas connecté, {username, role, magasin} sinon
+    adminScope: null,       // pour un admin : null = pas encore choisi (menu magasins), 'TOUS', ou un nom de magasin
+    loginError: '',
+  };
+
+  let db = { equipements: [], interventions: [], habilitations: [], accounts: [], types: [] };
+  let pendingPhoto = null;      // dataURL compressée en attente d'être rattachée à la prochaine vérif/panne
+  let lightboxPhoto = null;     // dataURL affichée en grand
+
+  function compressImage(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const maxDim = 900;
+          let w = img.width, h = img.height;
+          if (w > maxDim || h > maxDim) {
+            if (w >= h) { h = Math.round(h * maxDim / w); w = maxDim; }
+            else { w = Math.round(w * maxDim / h); h = maxDim; }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', 0.7));
+        };
+        img.onerror = () => reject(new Error('image invalide'));
+        img.src = e.target.result;
+      };
+      reader.onerror = () => reject(new Error('lecture impossible'));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  const root = document.getElementById('sfi-root');
+
+  function seed() {
+    const now = new Date();
+    const iso = (d) => d.toISOString().slice(0,10);
+    const monthsAgo = (n) => { const d = new Date(now); d.setMonth(d.getMonth()-n); return iso(d); };
+    const monthsAheadIso = (n) => { const d = new Date(now); d.setMonth(d.getMonth()+n); return iso(d); };
+
+    db.types = JSON.parse(JSON.stringify(DEFAULT_TYPES));
+
+    const ZONE_BY_TYPE = {
+      'Extincteur': 'Magasin',
+      'RIA (robinet incendie armé)': 'Magasin',
+      'SSI incendie (système sécurité incendie)': 'Bureaux',
+      'Désenfumage': 'Dépôt',
+      'Portes coupe-feu': 'Réserve',
+      'Portes automatiques vitrées': 'Magasin',
+      'Portes sectionnelles': 'Dépôt',
+      'Défibrillateur (DAE)': 'Magasin',
+      'Source centrale éclairage sécurité': 'Bureaux',
+      'BAES (blocs autonomes éclairage sécurité)': 'Magasin',
+      'Alarme intrusion': 'Bureaux',
+      'Vidéosurveillance': 'Magasin',
+      'Scie à panneau': 'Atelier / logistique',
+      'Presse à carton': 'Réserve',
+      'Chariot élévateur': 'Atelier / logistique',
+      'Gerbeur': 'Atelier / logistique',
+      'Tire-palette électrique': 'Réserve',
+      'Contrôle batteries (chariot/gerbeur)': 'Atelier / logistique',
+    };
+    const PREFIX_BY_TYPE = {
+      'Extincteur': 'EXT',
+      'RIA (robinet incendie armé)': 'RIA',
+      'SSI incendie (système sécurité incendie)': 'SSI',
+      'Désenfumage': 'DSF',
+      'Portes coupe-feu': 'PCF',
+      'Portes automatiques vitrées': 'PAV',
+      'Portes sectionnelles': 'PS',
+      'Défibrillateur (DAE)': 'DAE',
+      'Source centrale éclairage sécurité': 'SCE',
+      'BAES (blocs autonomes éclairage sécurité)': 'BAES',
+      'Alarme intrusion': 'INT',
+      'Vidéosurveillance': 'VS',
+      'Scie à panneau': 'SCP',
+      'Presse à carton': 'PRC',
+      'Chariot élévateur': 'CHE',
+      'Gerbeur': 'GER',
+      'Tire-palette électrique': 'TPE',
+      'Contrôle batteries (chariot/gerbeur)': 'BAT',
+    };
+    const OK_COMMENTS = ['RAS, contrôle conforme.', 'Rien à signaler.', 'Contrôle visuel + fonctionnel OK.', 'Conforme, aucune remarque.'];
+    const PANNE_COMMENTS = ['Anomalie constatée, prestataire à programmer.', 'Défaut détecté lors du contrôle, à surveiller.', 'Panne signalée par l\'équipe magasin.', 'Non conforme, réparation en attente.'];
+
+    db.equipements = [];
+    db.interventions = [];
+    let iCounter = 1;
+
+    const daysAgo = (n) => { const d = new Date(now); d.setDate(d.getDate() - Math.round(n)); return iso(d); };
+    const agoFn = (freq) => (freq < 1 ? daysAgo : monthsAgo);
+    const toUnit = (freq, months) => (freq < 1 ? months * 30 : months); // convertit un décalage "en mois" en jours si cycle court
+
+    Object.keys(ZONE_BY_TYPE).forEach((typeLabel, tIdx) => {
+      const t = db.types.find(x => x.label === typeLabel);
+      const freq = t.freq;
+      const prefix = PREFIX_BY_TYPE[typeLabel];
+      const zone = ZONE_BY_TYPE[typeLabel];
+      const ago = agoFn(freq);
+      // 4 déclinaisons par type, une par magasin, avec des situations différentes
+      const variants = [
+        {suffix: '1', lastVerifAgo: toUnit(freq, freq < 1 ? freq * 0.2 : 1), panne: false},          // à jour, contrôlé récemment
+        {suffix: '2', lastVerifAgo: toUnit(freq, Math.max(freq - (freq < 1 ? freq * 0.2 : 1), 0)), panne: false}, // échéance proche
+        {suffix: '3', lastVerifAgo: toUnit(freq, freq + (freq < 1 ? freq * 2 : 2)), panne: false},   // en retard
+        {suffix: '4', lastVerifAgo: null, panne: false},                                              // jamais contrôlé
+      ];
+      // Un type sur trois reçoit en plus une panne active sur son 3e exemplaire, pour varier
+      if (tIdx % 3 === 0) { variants[2].panne = true; }
+
+      variants.forEach((v, vIdx) => {
+        const magasin = MAGASINS[(tIdx + vIdx) % MAGASINS.length];
+        const id = `${prefix}-${v.suffix}`;
+        db.equipements.push({id, nom: `${typeLabel.split(' (')[0]} ${v.suffix}`, type: typeLabel, zone, magasin, freq, rappelMois: t.rappelDefaut || 6, createdAt: monthsAgo(24), source: 'demo'});
+        if (v.lastVerifAgo !== null) {
+          db.interventions.push({
+            id: 'i' + (iCounter++), equipementId: id, date: ago(v.lastVerifAgo), type: 'verif_ok',
+            commentaire: OK_COMMENTS[(tIdx + vIdx) % OK_COMMENTS.length], auteur: 'Équipe ' + magasin
+          });
+        }
+        if (v.panne) {
+          db.interventions.push({
+            id: 'i' + (iCounter++), equipementId: id, date: ago(toUnit(freq, freq < 1 ? freq * 0.3 : 1)), type: 'panne',
+            commentaire: PANNE_COMMENTS[tIdx % PANNE_COMMENTS.length], auteur: 'Équipe ' + magasin
+          });
+        }
+      });
+    });
+
+    // ---------- Habilitations / formations personnel ----------
+    const NAMES = ['Julien Meyer','Claire Weiss','Karim Boudjema','Thomas Reber','Sophie Klein','Nicolas Muller',
+      'Léa Fischer','Antoine Braun','Camille Ott','Maxime Roth','Julie Baumann','Yanis Kohler','Sarah Zimmer','Paul Herrmann'];
+    let nameIdx = 0;
+    const nextName = () => NAMES[(nameIdx++) % NAMES.length];
+
+    db.habilitations = [];
+    let hCounter = 1;
+    const personnelTypes = db.types.filter(t => t.category === 'personnel');
+
+    personnelTypes.forEach((t, tIdx) => {
+      const freq = t.freq;
+      const rappel = t.rappelDefaut || 6;
+      // 4 collaborateurs par habilitation, un par magasin, avec des échéances variées
+      const cases = [
+        {situation: 'ok',      obtMonthsAgo: 6,              expMonthsAhead: freq - 6},
+        {situation: 'warn',    obtMonthsAgo: freq - (rappel - 1), expMonthsAhead: rappel - 1},
+        {situation: 'danger',  obtMonthsAgo: freq + 3,        expMonthsAhead: -3},
+        {situation: 'renewed', obtMonthsAgo: 2,               expMonthsAhead: freq - 2, priorObtMonthsAgo: freq + 10, priorExpMonthsAgo: 10},
+      ];
+      cases.forEach((c, cIdx) => {
+        const collaborateur = nextName();
+        const magasin = MAGASINS[(tIdx + cIdx) % MAGASINS.length];
+        // Pour le cas "renewed", on ajoute un premier cycle déjà expiré avant le cycle en cours
+        if (c.priorObtMonthsAgo) {
+          db.habilitations.push({
+            id: 'h' + (hCounter++), type: t.label, collaborateur, magasin,
+            dateObtention: monthsAgo(c.priorObtMonthsAgo), dateExpiration: monthsAgo(c.priorExpMonthsAgo),
+            rappelMois: rappel, commentaire: 'Premier cycle.', auteur: 'Équipe ' + magasin, source: 'demo'
+          });
+        }
+        db.habilitations.push({
+          id: 'h' + (hCounter++), type: t.label, collaborateur, magasin,
+          dateObtention: monthsAgo(c.obtMonthsAgo),
+          dateExpiration: c.expMonthsAhead >= 0 ? monthsAheadIso(c.expMonthsAhead) : monthsAgo(-c.expMonthsAhead),
+          rappelMois: rappel,
+          commentaire: c.situation === 'renewed' ? 'Renouvellement effectué.' : '',
+          auteur: 'Équipe ' + magasin, source: 'demo'
+        });
+      });
+    });
+
+    if (!db.accounts || db.accounts.length === 0) {
+      db.accounts = defaultAccounts();
+    }
+  }
+
+  function defaultAccounts() {
+    return [
+      {username:'admin', pin:'0000', role:'admin', magasin:null},
+      {username:'hesingue', pin:'1111', role:'user', magasin:'Hésingue'},
+      {username:'sierentz', pin:'2222', role:'user', magasin:'Sierentz'},
+      {username:'waldighoffen', pin:'3333', role:'user', magasin:'Waldighoffen'},
+      {username:'mulhouse', pin:'4444', role:'user', magasin:'Mulhouse'},
+    ];
+  }
+
+  // Import des données réelles du registre "Suivi annuel sécurité magasin 2026-2027" — Hésingue.
+  // Idempotent : peut être relancé sans dupliquer (les entrées précédemment importées sont retirées avant réinsertion).
+  function importHesingueReel() {
+    const MAG = 'Hésingue';
+    const SRC = 'hesingue-2026';
+
+    // Retire toute donnée de démo (tous magasins confondus) + un éventuel import précédent,
+    // pour ne garder que du réel. Les autres magasins resteront vides tant qu'ils n'ont pas
+    // leurs propres données réelles importées.
+    db.equipements = db.equipements.filter(e => e.source !== 'demo' && e.source !== SRC);
+    db.habilitations = db.habilitations.filter(h => h.source !== 'demo' && h.source !== SRC);
+
+    const eq = (id, nom, type, zone, freq, freqOverride, events) => {
+      db.equipements.push({id, nom, type, zone, magasin: MAG, freq: freqOverride || freq, rappelMois: 6, createdAt: '2019-09-30', source: SRC});
+      events.forEach((ev, idx) => {
+        db.interventions.push({id: 'imp-' + id + '-' + idx, equipementId: id, date: ev.date, type: ev.type, commentaire: ev.commentaire, auteur: ev.auteur || 'Registre sécurité'});
+      });
+    };
+    const ok = (date, commentaire, auteur) => ({date, type: 'verif_ok', commentaire, auteur});
+    const panne = (date, commentaire, auteur) => ({date, type: 'panne', commentaire, auteur});
+
+    eq('RIA-H1', 'RIA n°1', 'RIA (robinet incendie armé)', 'Magasin', 12, null,
+      [panne('2025-08-14', 'Fuite constatée sur RIA n°1. Devis validé, en attente de rendez-vous pour réparation.', 'SPI')]);
+    eq('RIA-H6', 'RIA n°6', 'RIA (robinet incendie armé)', 'Magasin', 12, null,
+      [panne('2025-08-14', 'Diffuseur du RIA n°6 fuit. Devis validé, en attente de rendez-vous pour réparation.', 'SPI')]);
+    eq('EXT-H1', 'Extincteur réception extérieure', 'Extincteur', 'Extérieur', 12, null,
+      [panne('2025-08-14', 'Extincteur à changer (réception extérieure).', 'SPI')]);
+    eq('DSF-H1', 'Désenfumage réserve', 'Désenfumage', 'Dépôt', 6, 12,
+      [panne('2025-08-14', 'Suspicion vérin à changer. 2 trappes fermées manuellement (réserve entrée + bois). Devis validé, en attente de rendez-vous.', 'SPI')]);
+    eq('SSI-H1', 'SSI incendie — contrôle annuel', 'SSI incendie (système sécurité incendie)', 'Bureaux', 12, null,
+      [ok('2025-07-29', 'RAS.', 'CAPI')]);
+    eq('SSI-H2', 'SSI incendie — vérification triennale', 'SSI incendie (système sécurité incendie)', 'Bureaux', 12, 36,
+      [ok('2024-04-02', 'Vérification triennale RAS.', 'Qualiconsult')]);
+    eq('CVE-H1', 'Ramonage chaudière', 'Chauffage / ventilation', 'Bureaux', 12, null,
+      [ok('2026-06-16', 'RAS.', '3 LYS')]);
+    eq('CVE-H2', 'Contrôle chauffage/ventilation', 'Chauffage / ventilation', 'Bureaux', 12, null,
+      [panne('2025-09-04', "Contrôle d'étanchéité des installations + ramonage cheminées gaz + contrôle de vacuité RAS. Détecteur incendie manquant (a disparu).", 'Dalkia')]);
+    eq('GAZ-H1', 'Installation gaz', 'Installation gaz', 'Bureaux', 12, null,
+      [ok('2025-09-04', 'RAS.', 'Qualiconsult')]);
+    eq('SCE-H1', 'Éclairage sécurité — contrôle', 'Source centrale éclairage sécurité', 'Bureaux', 12, 6,
+      [ok('2026-06-04', 'RAS.', 'Baeumlin Création')]);
+    eq('ELE-H1', 'Installations électriques — RVRE', 'Installations électriques', 'Bureaux', 12, null,
+      [ok('2025-09-04', 'Voir rapport (RVRE).', 'Qualiconsult')]);
+    eq('ELE-H2', 'Installations électriques — contrôle général', 'Installations électriques', 'Bureaux', 12, null,
+      [ok('2025-09-04', 'Voir rapport.', 'Qualiconsult')]);
+    eq('PAV-H1', 'Porte automatique n°21120006885', 'Portes automatiques vitrées', 'Magasin', 12, 24,
+      [panne('2025-06-03', 'Porte n°21120006885 hors service. Devis en attente.', 'Schindler')]);
+    eq('PAV-H2', 'Porte automatique / rideau', 'Portes automatiques vitrées', 'Magasin', 12, 24,
+      [ok('2025-06-03', 'RAS.', 'Schindler')]);
+    eq('GER-H1', 'Gerbeur H2X386Y12042', 'Gerbeur', 'Atelier / logistique', 6, null,
+      [panne('2025-09-09', 'Assurer le bon fonctionnement du feu à éclat. Bip de recul à changer. Transmis à Damien.', 'Registre sécurité')]);
+    eq('CHE-H1', 'Chariot élévateur W4X372D01989', 'Chariot élévateur', 'Atelier / logistique', 6, null,
+      [ok('2024-04-10', 'VGP réalisée, RAS.', 'Registre sécurité'), ok('2025-04-16', 'RAS.', 'Registre sécurité')]);
+    eq('CHE-H2', 'Chariot élévateur H2X351N03335', 'Chariot élévateur', 'Atelier / logistique', 6, null,
+      [ok('2024-04-10', 'VGP réalisée.', 'Registre sécurité'), panne('2025-04-16', 'Usure importante du bandage arrière.', 'Registre sécurité')]);
+    eq('CHE-H3', 'Chariot élévateur H2X387V05466', 'Chariot élévateur', 'Atelier / logistique', 6, null,
+      [ok('2024-04-10', 'VGP réalisée.', 'Registre sécurité'), ok('2025-04-16', 'RAS.', 'Registre sécurité')]);
+    eq('ATC-H1', 'Dérouleur électrique A5 / Trimat', 'Autres contrôles techniques', 'Atelier / logistique', 12, null,
+      [panne('2025-11-17', 'Sanglage et goupille manquantes. Devis pour les 2 moteurs qui fuient. Pas de stockage sous la machine.', 'Registre sécurité')]);
+    eq('ATC-H2', 'Contrôle DEKRA', 'Autres contrôles techniques', 'Atelier / logistique', 12, null,
+      [ok('2025-04-16', 'RAS.', 'DEKRA')]);
+    eq('SCP-H1', 'Scie à panneau', 'Scie à panneau', 'Atelier / logistique', 12, null,
+      [panne('2026-01-14', "4 panneaux à changer + frein moteur + 1 semelle de capot à changer + roulette d'escamotage avec racleur DIA 30. Devis en attente.", 'Registre sécurité')]);
+    eq('CPT-H1', 'Compacteur', 'Compacteur / presse à déchets', 'Dépôt', 12, null,
+      [ok('2025-10-17', 'RAS.', 'Registre sécurité')]);
+    eq('CSD-H1', 'Commission de sécurité SDIS Mulhouse', 'Commission de sécurité (SDIS)', 'Bureaux', 36, null,
+      [ok('2025-08-20', 'En attente du procès-verbal.', 'SDIS Mulhouse')]);
+    eq('DAE-H1', 'Défibrillateur accueil', 'Défibrillateur (DAE)', 'Magasin', 3, 24,
+      [ok('2025-12-08', 'Électrodes enfant + adultes changées (périmées) + batterie changée.', 'Registre sécurité')]);
+
+    // Formations extincteurs — collaborateurs, une fiche par session suivie
+    const sessions = [
+      {date: '2019-09-30', noms: ['Stéphane de Brabander', 'Rachel Bettinger', 'Sarah Baeumlin', 'Marie-Christine Stahl']},
+      {date: '2021-02-12', noms: ['Patricia Birlinger', 'Sylvia Kreitner', 'Cécile Meyer', 'Vivien Schwab', 'Florian Stehlin', 'Carole Zoelle', 'Muhamed Becirovic', 'Christian Mehenni', 'Philippe Gigault']},
+      {date: '2023-04-13', noms: ['Damien Duplain', 'Stéphanie Hoerth', 'Pascal Jeanroy', 'Jerome Loll', 'Christophe Rolando', 'Vivien Schwab', 'Johannes Teil', 'Thomas Sifferlen']},
+      {date: '2025-01-08', noms: ['Rachel Bettinger', 'Stéphane de Brabander', 'Alizée Baeumlin', 'Sarah Baeumlin', 'Joel Delcurie', 'Maxime Goglia', 'Cyril Kaufmann', 'Sylvain Mauchassat', 'Johan Nicaise', 'Florian Stehlin', 'Farid Bendada', 'Christian Mehenni']},
+    ];
+    let hCounter = 1;
+    sessions.forEach(session => {
+      const obt = new Date(session.date);
+      const exp = new Date(obt); exp.setMonth(exp.getMonth() + 36);
+      session.noms.forEach(collaborateur => {
+        db.habilitations.push({
+          id: 'imp-h' + (hCounter++), type: 'Formation extincteurs (personnel)', collaborateur, magasin: MAG,
+          dateObtention: session.date, dateExpiration: exp.toISOString().slice(0,10),
+          rappelMois: 6, commentaire: 'Formation théorique + pratique extincteurs.', auteur: 'Registre sécurité', source: SRC
+        });
+      });
+    });
+  }
+
+  async function loadSession() {
+    try {
+      const res = await storageAPI.get(SESSION_KEY, false);
+      state.session = (res && res.value) ? JSON.parse(res.value) : null;
+    } catch (e) {
+      state.session = null;
+    }
+  }
+
+  async function saveSessionUsername(username) {
+    try {
+      await storageAPI.set(SESSION_KEY, JSON.stringify({username}), false);
+    } catch (e) {}
+  }
+
+  async function clearSession() {
+    state.session = null;
+    try { await storageAPI.delete(SESSION_KEY, false); } catch (e) {}
+  }
+
+  function attemptLogin(username, pin) {
+    const acc = db.accounts.find(a => a.username.toLowerCase() === username.trim().toLowerCase() && a.pin === pin);
+    if (!acc) return false;
+    state.session = {username: acc.username, role: acc.role, magasin: acc.magasin};
+    state.adminScope = null;
+    saveSessionUsername(acc.username);
+    return true;
+  }
+
+  // Revalide la session existante contre la liste actuelle des comptes (rôle/magasin à jour, compte supprimé => déconnexion)
+  function revalidateSession() {
+    if (!state.session) return;
+    const acc = db.accounts.find(a => a.username === state.session.username);
+    if (!acc) { state.session = null; return; }
+    state.session = {username: acc.username, role: acc.role, magasin: acc.magasin};
+  }
+
+  function inScope(magasin) {
+    if (!state.session) return true;
+    if (state.session.role === 'admin') {
+      if (!state.adminScope || state.adminScope === 'TOUS') return true;
+      return magasin === state.adminScope;
+    }
+    return magasin === state.session.magasin;
+  }
+
+  async function loadDB() {
+    try {
+      const res = await storageAPI.get(STORAGE_KEY, true);
+      if (res && res.value) {
+        db = JSON.parse(res.value);
+        if (!db.habilitations) db.habilitations = [];
+        if (!db.equipements) db.equipements = [];
+        if (!db.interventions) db.interventions = [];
+        if (!db.types || db.types.length === 0) {
+          db.types = JSON.parse(JSON.stringify(DEFAULT_TYPES));
+          await saveDB();
+        }
+        if (!db.accounts || db.accounts.length === 0) {
+          db.accounts = defaultAccounts();
+          await saveDB();
+        }
+      } else {
+        seed();
+        await saveDB();
+      }
+    } catch (e) {
+      seed();
+      try { await saveDB(); } catch(e2) {}
+    }
+    state.loading = false;
+  }
+
+  async function saveDB() {
+    try {
+      await storageAPI.set(STORAGE_KEY, JSON.stringify(db), true);
+    } catch (e) {
+      showToast('Enregistrement impossible — réessaie.');
+    }
+  }
+
+  function showToast(msg) {
+    state.toast = msg;
+    render();
+    setTimeout(() => { state.toast = null; render(); }, 2200);
+  }
+
+  function typeFreq(type) {
+    const t = db.types.find(t => t.label === type);
+    return t ? t.freq : 12;
+  }
+
+  function typeRappel(type) {
+    const t = db.types.find(t => t.label === type);
+    return t && t.rappelDefaut ? t.rappelDefaut : 6;
+  }
+
+  function typeCategory(type) {
+    const t = db.types.find(t => t.label === type);
+    return t ? t.category : 'equipement';
+  }
+
+  // Ajoute une période (en mois, peut être < 1 pour un contrôle hebdo/court) à une date
+  function addFreqPeriod(date, freqMonths) {
+    const d = new Date(date);
+    if (freqMonths >= 1) {
+      d.setMonth(d.getMonth() + Math.round(freqMonths));
+    } else {
+      d.setDate(d.getDate() + Math.round(freqMonths * 30));
+    }
+    return d;
+  }
+
+  // Libellé lisible d'une périodicité — gère les cycles courts (semaines) et longs (mois)
+  function formatFreq(freqMonths, short) {
+    if (freqMonths < 1) {
+      const weeks = Math.max(1, Math.round(freqMonths * 30 / 7));
+      return short ? `${weeks} sem.` : (weeks === 1 ? 'chaque semaine' : `toutes les ${weeks} semaines`);
+    }
+    return short ? `${freqMonths} mois` : (freqMonths === 1 ? 'tous les mois' : `tous les ${freqMonths} mois`);
+  }
+
+  function lastVerif(equipId) {
+    const list = db.interventions
+      .filter(i => i.equipementId === equipId && i.type === 'verif_ok')
+      .sort((a,b) => b.date.localeCompare(a.date));
+    return list[0] || null;
+  }
+
+  function lastPanneOuverte(equipId) {
+    const evs = db.interventions
+      .filter(i => i.equipementId === equipId)
+      .sort((a,b) => b.date.localeCompare(a.date));
+    if (evs.length === 0) return false;
+    return evs[0].type === 'panne';
+  }
+
+  // Statut d'un équipement — règle unique de rappel (par défaut 6 mois avant échéance),
+  // plafonnée à la moitié du cycle pour rester cohérente sur les contrôles courts (hebdo, trimestriel...)
+  function statusOf(equip) {
+    if (lastPanneOuverte(equip.id)) return 'danger';
+    const lv = lastVerif(equip.id);
+    if (!lv) return 'warn';
+    const freq = equip.freq || 12;
+    const due = addFreqPeriod(lv.date, freq);
+    const rappelMois = equip.rappelMois != null ? equip.rappelMois : 6;
+    const effectiveRappel = Math.min(rappelMois, freq / 2);
+    const rappelDate = addFreqPeriod(due, -effectiveRappel);
+    const now = new Date();
+    if (now > due) return 'danger';
+    if (now >= rappelDate) return 'warn';
+    return 'ok';
+  }
+
+  function statusLabel(s) {
+    return s === 'ok' ? 'À jour' : s === 'warn' ? 'À vérifier' : 'En panne / retard';
+  }
+
+  // Échéance de contrôle en ms — sert à prioriser (jamais vérifié ou en panne = tout en haut)
+  function dueDateMs(equip) {
+    if (lastPanneOuverte(equip.id)) return -Infinity;
+    const lv = lastVerif(equip.id);
+    if (!lv) return -Infinity;
+    return addFreqPeriod(lv.date, equip.freq || 12).getTime();
+  }
+
+  function fmtDate(iso) {
+    const d = new Date(iso);
+    return d.toLocaleDateString('fr-FR', {day:'2-digit', month:'short', year:'numeric'});
+  }
+
+  function typesWithCounts() {
+    return db.types.map(t => {
+      if (t.category === 'personnel') {
+        const collabs = habCollaboratorsForType(t.label);
+        const counts = {ok:0, warn:0, danger:0};
+        collabs.forEach(c => counts[habStatus(c.latest)]++);
+        return {...t, total: collabs.length, counts};
+      }
+      const items = db.equipements.filter(e => e.type === t.label && inScope(e.magasin));
+      const counts = {ok:0, warn:0, danger:0};
+      items.forEach(e => counts[statusOf(e)]++);
+      return {...t, total: items.length, counts};
+    });
+  }
+
+  // ---------- Habilitations personnel (nom, date obtention, date expiration, rappel) ----------
+
+  function habStatus(h) {
+    if (!h) return 'warn';
+    const exp = new Date(h.dateExpiration);
+    const now = new Date();
+    const rappelDate = new Date(exp);
+    rappelDate.setMonth(rappelDate.getMonth() - (h.rappelMois || 6));
+    if (now > exp) return 'danger';
+    if (now >= rappelDate) return 'warn';
+    return 'ok';
+  }
+
+  function habHistory(type, collaborateur) {
+    return db.habilitations
+      .filter(h => h.type === type && h.collaborateur === collaborateur)
+      .sort((a,b) => b.dateObtention.localeCompare(a.dateObtention));
+  }
+
+  function habCollaboratorsForType(type) {
+    const names = [...new Set(db.habilitations.filter(h => h.type === type && inScope(h.magasin)).map(h => h.collaborateur))];
+    return names.map(collaborateur => {
+      const hist = habHistory(type, collaborateur);
+      return {collaborateur, latest: hist[0], history: hist};
+    }).sort((a,b) => a.collaborateur.localeCompare(b.collaborateur));
+  }
+
+  function daysUntil(dateIso) {
+    return Math.round((new Date(dateIso) - new Date()) / 86400000);
+  }
+
+  function addMonthsIso(dateIso, months) {
+    const d = new Date(dateIso);
+    d.setMonth(d.getMonth() + months);
+    return d.toISOString().slice(0,10);
+  }
+
+  function escapeHtml(s) {
+    return (s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  // ---------- Rendering ----------
+
+  function render() {
+    if (state.loading || state.session === undefined) {
+      root.innerHTML = `<div class="sfi-loading">Chargement des équipements…</div>`;
+      return;
+    }
+    if (state.session === null) {
+      renderLogin();
+      return;
+    }
+    if (state.view === 'accounts' && state.session.role === 'admin') {
+      renderAccounts();
+    } else if (state.view === 'categories' && state.session.role === 'admin') {
+      renderCategories();
+    } else if (state.view === 'statusList' && state.statusFilter) {
+      renderStatusList();
+    } else if (state.view === 'detail' && state.currentId) {
+      renderDetail();
+    } else if (state.view === 'habDetail' && state.currentType && state.currentCollab) {
+      renderHabDetail();
+    } else if (state.view === 'habList' && state.currentType) {
+      renderHabList();
+    } else if (state.view === 'list' && state.currentType) {
+      renderList();
+    } else if (state.session.role === 'admin' && !state.adminScope && state.view === 'types') {
+      renderStoreMenu();
+    } else {
+      renderTypes();
+    }
+    bindGlobalEvents();
+  }
+
+  function renderLogin() {
+    root.innerHTML = `
+      <div class="sfi-header">
+        <div class="sfi-brand">
+          <div class="sfi-brand-mark">${weldomRoofIcon()}</div>
+          <div class="sfi-brand-text">
+            <h1>Tableau de bord sécurité</h1>
+            <p>Weldom</p>
+          </div>
+        </div>
+      </div>
+      <div class="sfi-list" style="padding-top:16px;">
+        <div class="sfi-section-label" style="margin-top:0;">Connexion</div>
+        <div class="sfi-field">
+          <label>Identifiant</label>
+          <input type="text" id="l-user" placeholder="ex : sierentz" autocapitalize="none" />
+        </div>
+        <div class="sfi-field">
+          <label>Code</label>
+          <input type="password" id="l-pin" inputmode="numeric" placeholder="Code à 4 chiffres" />
+        </div>
+        ${state.loginError ? `<div style="color:var(--danger); font-size:12.5px; margin-bottom:10px;">${escapeHtml(state.loginError)}</div>` : ''}
+        <button class="sfi-btn primary" style="width:100%;" data-do-login>Se connecter</button>
+        <p style="font-size:11px; color:var(--ink-soft); margin-top:14px; line-height:1.5;">
+          Identifiant et code fournis par ton responsable. Un compte "utilisateur" ne voit que son magasin ; un compte "admin" voit et gère tous les magasins.
+        </p>
+      </div>
+    `;
+    const doLogin = () => {
+      const u = root.querySelector('#l-user').value;
+      const p = root.querySelector('#l-pin').value;
+      if (attemptLogin(u, p)) {
+        state.loginError = '';
+        render();
+      } else {
+        state.loginError = 'Identifiant ou code incorrect.';
+        render();
+      }
+    };
+    root.querySelector('[data-do-login]').onclick = doLogin;
+    root.querySelector('#l-pin').addEventListener('keydown', (ev) => { if (ev.key === 'Enter') doLogin(); });
+  }
+
+  // ---------- Menu magasins (admin) ----------
+
+  function habLatestRecordsForStore(m) {
+    const seen = new Set();
+    const out = [];
+    db.habilitations.filter(h => h.magasin === m).forEach(h => {
+      const key = h.type + '||' + h.collaborateur;
+      if (seen.has(key)) return;
+      seen.add(key);
+      const hist = db.habilitations
+        .filter(x => x.type === h.type && x.collaborateur === h.collaborateur && x.magasin === m)
+        .sort((a,b) => b.dateObtention.localeCompare(a.dateObtention));
+      out.push({type: h.type, collaborateur: h.collaborateur, latest: hist[0]});
+    });
+    return out;
+  }
+
+  function storesWithCounts() {
+    return MAGASINS.map(m => {
+      const equipItems = db.equipements.filter(e => e.magasin === m);
+      const counts = {ok:0, warn:0, danger:0};
+      equipItems.forEach(e => counts[statusOf(e)]++);
+      const habRecords = habLatestRecordsForStore(m);
+      habRecords.forEach(r => counts[habStatus(r.latest)]++);
+      return {magasin: m, total: equipItems.length + habRecords.length, counts};
+    });
+  }
+
+  function renderStoreMenu() {
+    const stores = storesWithCounts();
+    const grandTotal = {ok:0, warn:0, danger:0};
+    stores.forEach(s => { grandTotal.ok += s.counts.ok; grandTotal.warn += s.counts.warn; grandTotal.danger += s.counts.danger; });
+
+    const tileHtml = (s) => {
+      const worst = s.counts.danger > 0 ? 'danger' : s.counts.warn > 0 ? 'warn' : 'ok';
+      const bits = [];
+      if (s.counts.danger) bits.push(`<span class="sfi-type-pill st-danger">${s.counts.danger}</span>`);
+      if (s.counts.warn) bits.push(`<span class="sfi-type-pill st-warn">${s.counts.warn}</span>`);
+      if (s.counts.ok) bits.push(`<span class="sfi-type-pill st-ok">${s.counts.ok}</span>`);
+      return `
+        <div class="sfi-type-tile" data-pick-store="${escapeHtml(s.magasin)}">
+          <div class="sfi-type-bar st-${s.total ? worst : 'empty'}"></div>
+          <div class="sfi-type-main">
+            <div class="sfi-type-label">${escapeHtml(s.magasin)}</div>
+            <div class="sfi-type-count">${s.total} ${s.total > 1 ? 'éléments suivis' : s.total === 1 ? 'élément suivi' : 'aucun élément'}</div>
+          </div>
+          <div class="sfi-type-pills">${bits.join('') || (s.total === 0 ? '<span class="sfi-type-pill st-empty">—</span>' : '')}</div>
+        </div>`;
+    };
+
+    root.innerHTML = `
+      <div class="sfi-header">
+        <div class="sfi-brand">
+          <div class="sfi-brand-mark">${weldomRoofIcon()}</div>
+          <div class="sfi-brand-text">
+            <h1>Tableau de bord sécurité</h1>
+            <p>Weldom · admin</p>
+          </div>
+        </div>
+      </div>
+      <div class="sfi-scope-row">
+        <span>${escapeHtml(state.session.username)} · admin</span>
+        <span>
+          <button data-open-categories style="margin-right:12px;">Catégories</button>
+          <button data-open-accounts style="margin-right:12px;">Comptes</button>
+          <button data-logout>Déconnexion</button>
+        </span>
+      </div>
+      <div class="sfi-stats">
+        <div class="sfi-stat st-ok"><b>${grandTotal.ok}</b><span>À jour</span></div>
+        <div class="sfi-stat st-warn"><b>${grandTotal.warn}</b><span>À vérifier</span></div>
+        <div class="sfi-stat st-danger"><b>${grandTotal.danger}</b><span>Panne/retard</span></div>
+      </div>
+      <div class="sfi-list" style="position:relative;">
+        <div class="sfi-section-label" style="margin-top:0;">Choisis un magasin</div>
+        ${stores.map(tileHtml).join('')}
+        <div class="sfi-section-label">Ou</div>
+        <div class="sfi-type-tile" data-pick-store="TOUS">
+          <div class="sfi-type-bar st-ok"></div>
+          <div class="sfi-type-main">
+            <div class="sfi-type-label">Tous les magasins</div>
+            <div class="sfi-type-count">Vue globale, regroupée par magasin</div>
+          </div>
+        </div>
+      </div>
+    `;
+    root.querySelectorAll('[data-pick-store]').forEach(el => {
+      el.onclick = () => {
+        state.adminScope = el.getAttribute('data-pick-store');
+        state.view = 'types';
+        render();
+      };
+    });
+    const openAccountsBtn = root.querySelector('[data-open-accounts]');
+    if (openAccountsBtn) openAccountsBtn.onclick = () => { state.view = 'accounts'; render(); };
+    const openCategoriesBtn = root.querySelector('[data-open-categories]');
+    if (openCategoriesBtn) openCategoriesBtn.onclick = () => { state.view = 'categories'; render(); };
+    const logoutBtn = root.querySelector('[data-logout]');
+    if (logoutBtn) logoutBtn.onclick = async () => {
+      await clearSession();
+      state.adminScope = null;
+      state.view = 'types';
+      render();
+    };
+  }
+
+  function renderAccounts() {
+    const rows = db.accounts.map(a => `
+      <div class="sfi-card" style="cursor:default;">
+        <div class="sfi-card-top">
+          <div>
+            <div class="sfi-card-name">${escapeHtml(a.username)}</div>
+            <div class="sfi-card-zone">${a.role === 'admin' ? 'Administrateur — tous les magasins' : escapeHtml(a.magasin || '—')}</div>
+            <div class="sfi-card-zone">Code : ${escapeHtml(a.pin)}</div>
+          </div>
+          ${a.username === state.session.username ? '' : `<button class="sfi-btn ghost" style="flex:none; padding:8px 10px; font-size:11.5px;" data-delete-account="${escapeHtml(a.username)}">Supprimer</button>`}
+        </div>
+      </div>`).join('');
+
+    root.innerHTML = `
+      <div class="sfi-detail-header">
+        <button class="sfi-back" data-back-to-types>${backIcon()} Retour</button>
+        <h2>Gestion des comptes</h2>
+        <p>${db.accounts.length} comptes</p>
+      </div>
+      <div class="sfi-list" style="position:relative;">
+        ${rows}
+        <div class="sfi-section-label">Zone technique</div>
+        <button class="sfi-btn ghost" style="width:100%; margin-bottom:8px;" data-reset-demo>Réinitialiser avec les données de démo</button>
+        <p style="font-size:11px; color:var(--ink-soft); line-height:1.5; margin-bottom:12px;">
+          Efface toutes les données actuelles (équipements, historique, habilitations) et les remplace par un jeu d'exemples varié. Les comptes créés manuellement sont conservés.
+        </p>
+        <button class="sfi-btn ghost" style="width:100%; margin-bottom:8px;" data-import-hesingue>Importer les données réelles Hésingue</button>
+        <p style="font-size:11px; color:var(--ink-soft); line-height:1.5;">
+          Charge le registre de sécurité 2026-2027 (extincteurs, RIA, désenfumage, SSI, chariots élévateurs, formations extincteurs...) à la place des données de démo pour le magasin Hésingue uniquement. Peut être relancé sans dupliquer.
+        </p>
+      </div>
+      <button class="sfi-fab" data-new-account title="Ajouter un compte">+</button>
+      ${state.sheet === 'add-account' ? renderAddAccountSheet() : ''}
+      ${state.sheet === 'confirm-reset-demo' ? renderConfirmSheet(
+          'Réinitialiser les données ?',
+          'Toutes les données actuelles (équipements, historique, habilitations) seront effacées et remplacées par un jeu d\'exemples varié. Les comptes créés manuellement sont conservés. Cette action est irréversible.',
+          'data-confirm-reset-demo', 'Réinitialiser'
+        ) : ''}
+      ${state.sheet === 'confirm-import-hesingue' ? renderConfirmSheet(
+          'Importer les données Hésingue ?',
+          'Le registre de sécurité réel (extincteurs, RIA, désenfumage, SSI, chariots élévateurs, formations extincteurs...) remplacera les données de démo du magasin Hésingue. Peut être relancé sans dupliquer.',
+          'data-confirm-import-hesingue', 'Importer'
+        ) : ''}
+      ${state.toast ? `<div class="sfi-toast">${escapeHtml(state.toast)}</div>` : ''}
+    `;
+  }
+
+  function renderConfirmSheet(title, body, confirmAttr, confirmLabel) {
+    return `
+    <div class="sfi-overlay" data-close-sheet>
+      <div class="sfi-sheet" onclick="event.stopPropagation()">
+        <h3>${escapeHtml(title)}</h3>
+        <p style="font-size:12.5px; color:var(--ink-soft); margin-top:-8px; margin-bottom:16px; line-height:1.5;">${escapeHtml(body)}</p>
+        <div class="sfi-sheet-actions">
+          <button class="sfi-btn ghost" data-close-sheet>Annuler</button>
+          <button class="sfi-btn primary" ${confirmAttr}>${escapeHtml(confirmLabel)}</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function renderAddAccountSheet() {
+    return `
+    <div class="sfi-overlay" data-close-sheet>
+      <div class="sfi-sheet" onclick="event.stopPropagation()">
+        <h3>Nouveau compte</h3>
+        <div class="sfi-field">
+          <label>Identifiant</label>
+          <input type="text" id="a-user" placeholder="ex : sierentz2" autocapitalize="none" />
+        </div>
+        <div class="sfi-field">
+          <label>Code</label>
+          <input type="text" id="a-pin" inputmode="numeric" placeholder="4 chiffres" maxlength="6" />
+        </div>
+        <div class="sfi-field">
+          <label>Rôle</label>
+          <select id="a-role">
+            <option value="user">Utilisateur (1 magasin)</option>
+            <option value="admin">Admin (tous les magasins)</option>
+          </select>
+        </div>
+        <div class="sfi-field" id="a-magasin-field">
+          <label>Magasin</label>
+          <select id="a-magasin">
+            ${MAGASINS.map(m => `<option value="${m}">${m}</option>`).join('')}
+          </select>
+        </div>
+        <div class="sfi-sheet-actions">
+          <button class="sfi-btn ghost" data-close-sheet>Annuler</button>
+          <button class="sfi-btn primary" data-save-account>Ajouter</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function renderCategories() {
+    const equipCats = db.types.filter(t => t.category !== 'personnel');
+    const persoCats = db.types.filter(t => t.category === 'personnel');
+
+    const row = (t) => {
+      const count = t.category === 'personnel'
+        ? habCollaboratorsForType(t.label).length
+        : db.equipements.filter(e => e.type === t.label).length;
+      return `
+      <div class="sfi-card" style="cursor:default;">
+        <div class="sfi-card-top">
+          <div>
+            <div class="sfi-card-name">${escapeHtml(t.label)}</div>
+            <div class="sfi-card-zone">${formatFreq(t.freq)} · rappel ${t.rappelDefaut || 6} mois avant · ${count} fiche${count > 1 ? 's' : ''}</div>
+          </div>
+          <div style="display:flex; gap:6px; flex-shrink:0;">
+            <button class="sfi-btn ghost" style="padding:8px 10px; font-size:11.5px;" data-edit-category="${escapeHtml(t.label)}">Modifier</button>
+            ${count === 0 ? `<button class="sfi-btn ghost" style="padding:8px 10px; font-size:11.5px; color:var(--danger);" data-delete-category="${escapeHtml(t.label)}">Suppr.</button>` : ''}
+          </div>
+        </div>
+      </div>`;
+    };
+
+    root.innerHTML = `
+      <div class="sfi-detail-header">
+        <button class="sfi-back" data-back-to-types>${backIcon()} Retour</button>
+        <h2>Catégories</h2>
+        <p>${db.types.length} catégories</p>
+      </div>
+      <div class="sfi-list" style="position:relative;">
+        <div class="sfi-section-label" style="margin-top:0;">Matériel & installations</div>
+        ${equipCats.map(row).join('')}
+        <div class="sfi-section-label">Personnel formé / habilitations</div>
+        ${persoCats.map(row).join('')}
+        <p style="font-size:11px; color:var(--ink-soft); line-height:1.5; margin-top:10px;">
+          Une catégorie ne peut être supprimée que si elle ne contient plus aucune fiche.
+        </p>
+      </div>
+      <button class="sfi-fab" data-new-category title="Ajouter une catégorie">+</button>
+      ${state.sheet === 'add-category' ? renderCategorySheet(null) : ''}
+      ${state.sheet === 'edit-category' ? renderCategorySheet(db.types.find(t => t.label === state.editingCategoryLabel)) : ''}
+      ${state.sheet === 'confirm-delete-category' ? renderConfirmSheet(
+          'Supprimer cette catégorie ?',
+          `« ${state.editingCategoryLabel} » sera définitivement retirée de la liste des catégories.`,
+          'data-confirm-delete-category', 'Supprimer'
+        ) : ''}
+      ${state.toast ? `<div class="sfi-toast">${escapeHtml(state.toast)}</div>` : ''}
+    `;
+  }
+
+  function renderCategorySheet(existing) {
+    const isNew = !existing;
+    const presets = [0.25, 1, 3, 6, 12, 24, 36, 60];
+    return `
+    <div class="sfi-overlay" data-close-sheet>
+      <div class="sfi-sheet" onclick="event.stopPropagation()">
+        <h3>${isNew ? 'Nouvelle catégorie' : 'Modifier la catégorie'}</h3>
+        <div class="sfi-field">
+          <label>Nom de la catégorie</label>
+          <input type="text" id="cat-label" value="${existing ? escapeHtml(existing.label) : ''}" placeholder="ex : Portail motorisé" ${isNew ? '' : 'data-original-label="' + escapeHtml(existing.label) + '"'} />
+        </div>
+        <div class="sfi-field">
+          <label>Fréquence de contrôle</label>
+          <select id="cat-freq">
+            ${presets.map(p => `<option value="${p}" ${existing && existing.freq === p ? 'selected' : ''}>${p === 0.25 ? 'Chaque semaine' : (p === 1 ? 'Tous les mois' : 'Tous les ' + p + ' mois')}</option>`).join('')}
+          </select>
+        </div>
+        <div class="sfi-field">
+          <label>Rappel avant échéance</label>
+          <select id="cat-rappel">
+            ${[1,3,6,9,12].map(r => `<option value="${r}" ${existing ? (existing.rappelDefaut === r ? 'selected' : '') : (r === 6 ? 'selected' : '')}>${r} mois avant</option>`).join('')}
+          </select>
+        </div>
+        <div class="sfi-field">
+          <label>Type de fiche</label>
+          <select id="cat-category" ${!isNew ? 'disabled' : ''}>
+            <option value="equipement" ${!existing || existing.category === 'equipement' ? 'selected' : ''}>Matériel / installation</option>
+            <option value="personnel" ${existing && existing.category === 'personnel' ? 'selected' : ''}>Personnel formé / habilitation</option>
+          </select>
+          ${!isNew ? `<p style="font-size:11px; color:var(--ink-soft); margin-top:6px;">Le type de fiche ne se change pas après création.</p>` : ''}
+        </div>
+        <div class="sfi-sheet-actions">
+          <button class="sfi-btn ghost" data-close-sheet>Annuler</button>
+          <button class="sfi-btn primary" data-save-category>Enregistrer</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function renderTypes() {
+    const scopedEquip = db.equipements.filter(e => inScope(e.magasin));
+    const overall = {ok:0, warn:0, danger:0};
+    scopedEquip.forEach(e => overall[statusOf(e)]++);
+
+    // Recherche globale : si texte saisi, on affiche directement les équipements trouvés
+    if (state.typeSearch.trim()) {
+      const q = state.typeSearch.toLowerCase();
+      const found = scopedEquip.filter(e =>
+        (e.nom + e.id + e.zone + e.type).toLowerCase().includes(q));
+      const cards = found.length === 0
+        ? `<div class="sfi-empty">Aucun résultat pour « ${escapeHtml(state.typeSearch)} ».</div>`
+        : found.map(e => equipCardHtml(e)).join('');
+      root.innerHTML = `
+        ${headerHtml()}
+        <div class="sfi-stats">
+          <div class="sfi-stat st-ok" data-status-filter="ok"><b>${overall.ok}</b><span>À jour</span></div>
+          <div class="sfi-stat st-warn" data-status-filter="warn"><b>${overall.warn}</b><span>À vérifier</span></div>
+          <div class="sfi-stat st-danger" data-status-filter="danger"><b>${overall.danger}</b><span>Panne/retard</span></div>
+        </div>
+        <div class="sfi-search">
+          <input type="text" placeholder="Rechercher un équipement, une zone, un type…" value="${escapeHtml(state.typeSearch)}" data-type-search />
+        </div>
+        <div class="sfi-list" style="position:relative;">${cards}</div>
+        <button class="sfi-fab" data-new-equip title="Ajouter un équipement">+</button>
+        ${state.sheet === 'add-equip' ? renderAddEquipSheet() : ''}
+        ${state.sheet === 'scan' ? renderScanSheet() : ''}
+        ${state.toast ? `<div class="sfi-toast">${escapeHtml(state.toast)}</div>` : ''}
+      `;
+      return;
+    }
+
+    const groups = typesWithCounts();
+    const equipGroups = groups.filter(t => t.category !== 'personnel');
+    const persoGroups = groups.filter(t => t.category === 'personnel');
+
+    const tileHtml = (t) => {
+      const worst = t.counts.danger > 0 ? 'danger' : t.counts.warn > 0 ? 'warn' : 'ok';
+      const bits = [];
+      if (t.counts.danger) bits.push(`<span class="sfi-type-pill st-danger">${t.counts.danger}</span>`);
+      if (t.counts.warn) bits.push(`<span class="sfi-type-pill st-warn">${t.counts.warn}</span>`);
+      if (t.counts.ok) bits.push(`<span class="sfi-type-pill st-ok">${t.counts.ok}</span>`);
+      return `
+        <div class="sfi-type-tile" data-open-type="${escapeHtml(t.label)}">
+          <div class="sfi-type-bar st-${t.total ? worst : 'empty'}"></div>
+          <div class="sfi-type-main">
+            <div class="sfi-type-label">${escapeHtml(t.label)}</div>
+            <div class="sfi-type-count">${t.total} ${t.total > 1 ? 'éléments' : t.total === 1 ? 'élément' : 'aucun élément'}</div>
+          </div>
+          <div class="sfi-type-pills">${bits.join('') || (t.total === 0 ? '<span class="sfi-type-pill st-empty">—</span>' : '')}</div>
+        </div>`;
+    };
+
+    root.innerHTML = `
+      ${headerHtml()}
+      <div class="sfi-stats">
+        <div class="sfi-stat st-ok" data-status-filter="ok"><b>${overall.ok}</b><span>À jour</span></div>
+        <div class="sfi-stat st-warn" data-status-filter="warn"><b>${overall.warn}</b><span>À vérifier</span></div>
+        <div class="sfi-stat st-danger" data-status-filter="danger"><b>${overall.danger}</b><span>Panne/retard</span></div>
+      </div>
+      <div class="sfi-search">
+        <input type="text" placeholder="Rechercher un équipement, une zone, un type…" value="${escapeHtml(state.typeSearch)}" data-type-search />
+      </div>
+      <div class="sfi-list" style="position:relative;">
+        <div class="sfi-section-label" style="margin-top:0;">Matériel & installations</div>
+        ${equipGroups.map(tileHtml).join('')}
+        <div class="sfi-section-label">Personnel formé / habilitations</div>
+        ${persoGroups.map(tileHtml).join('')}
+      </div>
+      <button class="sfi-fab" data-new-equip title="Ajouter un équipement">+</button>
+      ${state.sheet === 'add-equip' ? renderAddEquipSheet() : ''}
+      ${state.sheet === 'scan' ? renderScanSheet() : ''}
+      ${state.toast ? `<div class="sfi-toast">${escapeHtml(state.toast)}</div>` : ''}
+    `;
+  }
+
+  function headerHtml() {
+    const isAdmin = state.session.role === 'admin';
+    const scopeLabel = isAdmin ? (state.adminScope === 'TOUS' ? 'Tous les magasins' : state.adminScope) : state.session.magasin;
+    return `
+      <div class="sfi-header">
+        <div class="sfi-brand">
+          <div class="sfi-brand-mark">${weldomRoofIcon()}</div>
+          <div class="sfi-brand-text">
+            <h1>Tableau de bord sécurité</h1>
+            <p>Weldom · ${escapeHtml(scopeLabel)}</p>
+          </div>
+        </div>
+        <button class="sfi-scan-btn" data-scan>${scanIcon()} Scanner</button>
+      </div>
+      <div class="sfi-scope-row">
+        <span>${escapeHtml(state.session.username)} · ${isAdmin ? 'admin' : 'utilisateur'}</span>
+        <span>
+          ${isAdmin ? '<button data-change-store style="margin-right:12px;">Changer de magasin</button>' : ''}
+          ${isAdmin ? '<button data-open-categories style="margin-right:12px;">Catégories</button>' : ''}
+          ${isAdmin ? '<button data-open-accounts style="margin-right:12px;">Comptes</button>' : ''}
+          <button data-logout>Déconnexion</button>
+        </span>
+      </div>`;
+  }
+
+  function equipCardHtml(e) {
+    const s = statusOf(e);
+    const lv = lastVerif(e.id);
+    const panneActive = lastPanneOuverte(e.id);
+    const now = new Date();
+
+    let dueStr = '—', progressPct = 100, urgencyText = 'Jamais contrôlé';
+    if (panneActive) {
+      urgencyText = 'Panne signalée';
+      progressPct = 100;
+    } else if (lv) {
+      const due = addFreqPeriod(lv.date, e.freq || 12);
+      dueStr = fmtDate(due);
+      const elapsedDays = Math.round((now - new Date(lv.date)) / 86400000);
+      const totalDays = Math.max((e.freq || 12) * 30, 1);
+      progressPct = Math.min(100, Math.max(0, Math.round((elapsedDays / totalDays) * 100)));
+      const daysLeft = Math.round((due - now) / 86400000);
+      urgencyText = daysLeft < 0 ? `En retard de ${Math.abs(daysLeft)} j` : `Prochain contrôle dans ${daysLeft} j`;
+    }
+
+    return `
+    <div class="sfi-card" data-open="${e.id}">
+      <div class="sfi-card-top">
+        <div>
+          <div class="sfi-card-id">${e.id}</div>
+          <div class="sfi-card-name">${escapeHtml(e.nom)}</div>
+          <div class="sfi-card-zone">${escapeHtml(e.zone)} · ${escapeHtml(e.type)}</div>
+          ${state.session.role === 'admin' && state.adminScope === 'TOUS' ? `<div class="sfi-store-pill">${escapeHtml(e.magasin || '—')}</div>` : ''}
+        </div>
+        <div class="sfi-badge st-${s}">${statusLabel(s)}</div>
+      </div>
+      <div class="sfi-control-block">
+        <div class="sfi-control-row"><span>Dernier contrôle</span><b>${lv ? fmtDate(lv.date) : 'Jamais'}</b></div>
+        <div class="sfi-control-row"><span>Périodicité</span><b>${formatFreq(e.freq, true)}</b></div>
+        <div class="sfi-control-row"><span>Prochain contrôle</span><b>${dueStr}</b></div>
+        <div class="sfi-urgency-bar"><div class="sfi-urgency-fill st-${s}" style="width:${progressPct}%"></div></div>
+        <div class="sfi-urgency-label st-${s}">${urgencyText}</div>
+      </div>
+    </div>`;
+  }
+
+  function renderList() {
+    const typeItems = db.equipements.filter(e => e.type === state.currentType && inScope(e.magasin));
+    const counts = {ok:0, warn:0, danger:0};
+    typeItems.forEach(e => counts[statusOf(e)]++);
+
+    let filtered = typeItems.filter(e => {
+      if (state.tab !== 'tous' && statusOf(e) !== state.tab) return false;
+      if (state.search && !(e.nom + e.zone + e.id).toLowerCase().includes(state.search.toLowerCase())) return false;
+      return true;
+    });
+    filtered.sort((a, b) => dueDateMs(a) - dueDateMs(b));
+
+    const cards = filtered.length === 0
+      ? `<div class="sfi-empty">Aucun équipement ne correspond.<br>Ajoute-en un avec le bouton +.</div>`
+      : (state.session.role === 'admin' && state.adminScope === 'TOUS' ? groupCardsByStore(filtered, e => e.magasin, equipCardHtml) : filtered.map(e => equipCardHtml(e)).join(''));
+
+    root.innerHTML = `
+      <div class="sfi-detail-header">
+        <button class="sfi-back" data-back-to-types>${backIcon()} Tous les types</button>
+        <h2>${escapeHtml(state.currentType)}</h2>
+        <p>${typeItems.length} ${typeItems.length > 1 ? 'éléments enregistrés' : 'élément enregistré'}</p>
+      </div>
+
+      <div class="sfi-stats">
+        <div class="sfi-stat st-ok"><b>${counts.ok}</b><span>À jour</span></div>
+        <div class="sfi-stat st-warn"><b>${counts.warn}</b><span>À vérifier</span></div>
+        <div class="sfi-stat st-danger"><b>${counts.danger}</b><span>Panne/retard</span></div>
+      </div>
+
+      <div class="sfi-tabs">
+        ${tabBtn('tous','Tous')}${tabBtn('ok','À jour')}${tabBtn('warn','À vérifier')}${tabBtn('danger','Panne')}
+      </div>
+
+      <div class="sfi-search">
+        <input type="text" placeholder="Rechercher dans ce type…" value="${escapeHtml(state.search)}" data-search />
+      </div>
+
+      <div class="sfi-list" style="position:relative;">
+        ${cards}
+      </div>
+      <button class="sfi-fab" data-new-equip title="Ajouter un équipement">+</button>
+      ${state.sheet === 'add-equip' ? renderAddEquipSheet() : ''}
+      ${state.sheet === 'scan' ? renderScanSheet() : ''}
+      ${state.toast ? `<div class="sfi-toast">${escapeHtml(state.toast)}</div>` : ''}
+    `;
+  }
+
+  // Vue transverse : tous les équipements (tous types confondus) partageant un même statut
+  function renderStatusList() {
+    const statusTitles = {ok: 'À jour', warn: 'À vérifier', danger: 'Panne / retard'};
+    const items = db.equipements.filter(e => inScope(e.magasin) && statusOf(e) === state.statusFilter);
+
+    let filtered = items.filter(e => {
+      if (!state.search) return true;
+      const q = state.search.toLowerCase();
+      return (e.nom + e.zone + e.id + e.type).toLowerCase().includes(q);
+    });
+    filtered.sort((a, b) => dueDateMs(a) - dueDateMs(b));
+
+    const cards = filtered.length === 0
+      ? `<div class="sfi-empty">Aucun équipement dans cet état.</div>`
+      : (state.session.role === 'admin' && state.adminScope === 'TOUS' ? groupCardsByStore(filtered, e => e.magasin, equipCardHtml) : filtered.map(e => equipCardHtml(e)).join(''));
+
+    root.innerHTML = `
+      <div class="sfi-detail-header">
+        <button class="sfi-back" data-back-to-types>${backIcon()} Retour</button>
+        <h2>${statusTitles[state.statusFilter]}</h2>
+        <p>${items.length} ${items.length > 1 ? 'équipements' : 'équipement'}, tous types confondus</p>
+      </div>
+
+      <div class="sfi-search">
+        <input type="text" placeholder="Rechercher un équipement, une zone, un type…" value="${escapeHtml(state.search)}" data-search />
+      </div>
+
+      <div class="sfi-list" style="position:relative;">
+        ${cards}
+      </div>
+      ${state.toast ? `<div class="sfi-toast">${escapeHtml(state.toast)}</div>` : ''}
+    `;
+  }
+
+  function tabBtn(key, label) {
+    return `<div class="sfi-tab ${state.tab===key?'active':''}" data-tab="${key}">${label}</div>`;
+  }
+
+  // Regroupe une liste de cartes par magasin (ordre MAGASINS), avec un sous-titre par groupe — utilisé côté admin
+  function groupCardsByStore(items, getStore, cardFn) {
+    const groups = {};
+    items.forEach(it => {
+      const m = getStore(it) || 'Non renseigné';
+      if (!groups[m]) groups[m] = [];
+      groups[m].push(it);
+    });
+    const order = [...MAGASINS, 'Non renseigné'].filter(m => groups[m]);
+    return order.map(m => `
+      <div class="sfi-store-heading">
+        <span>${escapeHtml(m)}</span>
+        <span class="sfi-store-heading-count">${groups[m].length}</span>
+      </div>
+      ${groups[m].map(cardFn).join('')}
+    `).join('');
+  }
+
+  function habCardHtml(c) {
+    const s = habStatus(c.latest);
+    const days = daysUntil(c.latest.dateExpiration);
+    const daysLabel = days < 0 ? `Expirée depuis ${Math.abs(days)} j` : `Expire dans ${days} j`;
+    return `
+    <div class="sfi-card" data-open-collab="${escapeHtml(c.collaborateur)}">
+      <div class="sfi-card-top">
+        <div>
+          <div class="sfi-card-name">${escapeHtml(c.collaborateur)}</div>
+          <div class="sfi-card-zone">Obtenue le ${fmtDate(c.latest.dateObtention)} · Expire le ${fmtDate(c.latest.dateExpiration)}</div>
+          <div class="sfi-card-zone">${daysLabel} · rappel ${c.latest.rappelMois || 6} mois avant</div>
+        </div>
+        <div class="sfi-badge st-${s}">${statusLabel(s)}</div>
+      </div>
+    </div>`;
+  }
+
+  function renderHabList() {
+    const collabs = habCollaboratorsForType(state.currentType);
+    const counts = {ok:0, warn:0, danger:0};
+    collabs.forEach(c => counts[habStatus(c.latest)]++);
+
+    let filtered = collabs.filter(c => {
+      const s = habStatus(c.latest);
+      if (state.tab !== 'tous' && s !== state.tab) return false;
+      if (state.search && !c.collaborateur.toLowerCase().includes(state.search.toLowerCase())) return false;
+      return true;
+    });
+    filtered.sort((a, b) => new Date(a.latest.dateExpiration) - new Date(b.latest.dateExpiration));
+
+    const cards = filtered.length === 0
+      ? `<div class="sfi-empty">Personne n'est enregistré pour ce type.<br>Ajoute un collaborateur avec le bouton +.</div>`
+      : (state.session.role === 'admin' && state.adminScope === 'TOUS' ? groupCardsByStore(filtered, c => c.latest.magasin, habCardHtml) : filtered.map(habCardHtml).join(''));
+
+    root.innerHTML = `
+      <div class="sfi-detail-header">
+        <button class="sfi-back" data-back-to-types>${backIcon()} Tous les types</button>
+        <h2>${escapeHtml(state.currentType)}</h2>
+        <p>${collabs.length} ${collabs.length > 1 ? 'collaborateurs enregistrés' : 'collaborateur enregistré'}</p>
+      </div>
+
+      <div class="sfi-stats">
+        <div class="sfi-stat st-ok"><b>${counts.ok}</b><span>À jour</span></div>
+        <div class="sfi-stat st-warn"><b>${counts.warn}</b><span>À renouveler</span></div>
+        <div class="sfi-stat st-danger"><b>${counts.danger}</b><span>Expirée</span></div>
+      </div>
+
+      <div class="sfi-tabs">
+        ${tabBtn('tous','Tous')}${tabBtn('ok','À jour')}${tabBtn('warn','À renouveler')}${tabBtn('danger','Expirée')}
+      </div>
+
+      <div class="sfi-search">
+        <input type="text" placeholder="Rechercher un collaborateur…" value="${escapeHtml(state.search)}" data-search />
+      </div>
+
+      <div class="sfi-list" style="position:relative;">
+        ${cards}
+      </div>
+      <button class="sfi-fab" data-new-hab title="Ajouter un collaborateur">+</button>
+      ${state.sheet === 'add-hab' ? renderAddHabSheet() : ''}
+      ${state.toast ? `<div class="sfi-toast">${escapeHtml(state.toast)}</div>` : ''}
+    `;
+  }
+
+  function renderHabDetail() {
+    const hist = habHistory(state.currentType, state.currentCollab);
+    if (hist.length === 0) { state.view = 'habList'; return renderHabList(); }
+    const latest = hist[0];
+    const s = habStatus(latest);
+    const days = daysUntil(latest.dateExpiration);
+    const daysLabel = days < 0 ? `Expirée depuis ${Math.abs(days)} jours` : `Expire dans ${days} jours`;
+
+    const historyHtml = hist.map((h, idx) => `
+      <div class="sfi-history-item ${idx === 0 ? 'ok' : ''}">
+        <div class="h-date">Obtenue le ${fmtDate(h.dateObtention)} → expire le ${fmtDate(h.dateExpiration)}</div>
+        <div class="h-label">${idx === 0 ? 'Cycle en cours' : 'Cycle précédent'}</div>
+        ${h.commentaire ? `<div class="h-comment">${escapeHtml(h.commentaire)}</div>` : ''}
+        <div class="h-author">Rappel ${h.rappelMois || 6} mois avant · ${escapeHtml(h.auteur || '')} <button class="sfi-photo-link" style="margin-left:6px;" data-edit-hab-cycle="${h.id}">Modifier</button></div>
+      </div>`).join('');
+
+    root.innerHTML = `
+      <div class="sfi-detail-header">
+        <button class="sfi-back" data-back-to-hablist>${backIcon()} Retour</button>
+        <h2>${escapeHtml(state.currentCollab)}</h2>
+        <p>${escapeHtml(state.currentType)}${state.session.role === 'admin' ? ' · ' + escapeHtml(latest.magasin || '—') : ''}</p>
+        <button class="sfi-photo-link" style="color:#B8B2A2; margin-top:4px;" data-edit-collab-name>Modifier le nom du collaborateur</button>
+      </div>
+      <div class="sfi-detail-body">
+        <div class="sfi-badge st-${s}" style="display:inline-block; margin-bottom: 6px;">${statusLabel(s)}</div>
+        <div style="font-size:12.5px; color: var(--ink-soft); margin-bottom: 4px;">
+          ${daysLabel} · Rappel réglé à ${latest.rappelMois || 6} mois avant l'échéance
+        </div>
+
+        <div class="sfi-section-label">Actions</div>
+        <div class="sfi-action-row">
+          <button class="sfi-action-btn ok" data-renew-hab>${checkIcon()} Renouveler</button>
+        </div>
+
+        <div class="sfi-section-label">Historique</div>
+        ${historyHtml}
+      </div>
+      ${state.sheet === 'renew-hab' ? renderRenewHabSheet(latest) : ''}
+      ${state.sheet === 'edit-collab-name' ? renderEditCollabNameSheet() : ''}
+      ${state.sheet === 'edit-hab-cycle' ? renderEditHabCycleSheet(hist.find(h => h.id === state.editingHistoryId)) : ''}
+      ${state.toast ? `<div class="sfi-toast">${escapeHtml(state.toast)}</div>` : ''}
+    `;
+  }
+
+  function renderAddHabSheet() {
+    const t = db.types.find(x => x.label === state.currentType) || {freq: 36, rappelDefaut: 6};
+    return `
+    <div class="sfi-overlay" data-close-sheet>
+      <div class="sfi-sheet" onclick="event.stopPropagation()">
+        <h3>Nouveau collaborateur — ${escapeHtml(state.currentType)}</h3>
+        <div class="sfi-field">
+          <label>Nom du collaborateur</label>
+          <input type="text" id="h-collab" placeholder="Prénom Nom" />
+        </div>
+        ${state.session.role === 'admin' ? `
+        <div class="sfi-field">
+          <label>Magasin</label>
+          <select id="h-magasin">
+            ${MAGASINS.map(m => `<option value="${m}" ${state.adminScope === m ? 'selected' : ''}>${m}</option>`).join('')}
+          </select>
+        </div>` : ''}
+        <div class="sfi-field">
+          <label>Date d'obtention</label>
+          <input type="date" id="h-obtention" value="${new Date().toISOString().slice(0,10)}" />
+        </div>
+        <div class="sfi-field">
+          <label>Date d'expiration</label>
+          <input type="date" id="h-expiration" value="${addMonthsIso(new Date().toISOString().slice(0,10), t.freq || 36)}" />
+        </div>
+        <div class="sfi-field">
+          <label>Rappel avant échéance</label>
+          <select id="h-rappel">
+            <option value="3">3 mois avant</option>
+            <option value="6" selected>6 mois avant</option>
+            <option value="9">9 mois avant</option>
+            <option value="12">12 mois avant</option>
+          </select>
+        </div>
+        <div class="sfi-field">
+          <label>Commentaire (optionnel)</label>
+          <textarea id="h-commentaire" placeholder="Organisme, session, précisions…"></textarea>
+        </div>
+        <div class="sfi-sheet-actions">
+          <button class="sfi-btn ghost" data-close-sheet>Annuler</button>
+          <button class="sfi-btn primary" data-save-hab>Ajouter</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function renderRenewHabSheet(latest) {
+    const t = db.types.find(x => x.label === state.currentType) || {freq: 36, rappelDefaut: 6};
+    const today = new Date().toISOString().slice(0,10);
+    return `
+    <div class="sfi-overlay" data-close-sheet>
+      <div class="sfi-sheet" onclick="event.stopPropagation()">
+        <h3>Renouveler — ${escapeHtml(state.currentCollab)}</h3>
+        <div class="sfi-field">
+          <label>Date d'obtention</label>
+          <input type="date" id="h-obtention" value="${today}" />
+        </div>
+        <div class="sfi-field">
+          <label>Date d'expiration</label>
+          <input type="date" id="h-expiration" value="${addMonthsIso(today, t.freq || 36)}" />
+        </div>
+        <div class="sfi-field">
+          <label>Rappel avant échéance</label>
+          <select id="h-rappel">
+            <option value="3" ${latest.rappelMois===3?'selected':''}>3 mois avant</option>
+            <option value="6" ${!latest.rappelMois || latest.rappelMois===6?'selected':''}>6 mois avant</option>
+            <option value="9" ${latest.rappelMois===9?'selected':''}>9 mois avant</option>
+            <option value="12" ${latest.rappelMois===12?'selected':''}>12 mois avant</option>
+          </select>
+        </div>
+        <div class="sfi-field">
+          <label>Commentaire (optionnel)</label>
+          <textarea id="h-commentaire" placeholder="Organisme, session, précisions…"></textarea>
+        </div>
+        <div class="sfi-sheet-actions">
+          <button class="sfi-btn ghost" data-close-sheet>Annuler</button>
+          <button class="sfi-btn primary" data-confirm-renew>Valider</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function renderEditCollabNameSheet() {
+    return `
+    <div class="sfi-overlay" data-close-sheet>
+      <div class="sfi-sheet" onclick="event.stopPropagation()">
+        <h3>Modifier le nom</h3>
+        <p style="font-size:12.5px; color:var(--ink-soft); margin-top:-8px; margin-bottom:14px;">
+          Corrige le nom pour tous les cycles enregistrés de cette personne sur cette habilitation.
+        </p>
+        <div class="sfi-field">
+          <label>Nom du collaborateur</label>
+          <input type="text" id="ec-collab" value="${escapeHtml(state.currentCollab)}" />
+        </div>
+        <div class="sfi-sheet-actions">
+          <button class="sfi-btn ghost" data-close-sheet>Annuler</button>
+          <button class="sfi-btn primary" data-save-collab-name>Enregistrer</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function renderEditHabCycleSheet(h) {
+    if (!h) return '';
+    return `
+    <div class="sfi-overlay" data-close-sheet>
+      <div class="sfi-sheet" onclick="event.stopPropagation()">
+        <h3>Modifier ce cycle</h3>
+        <div class="sfi-field">
+          <label>Date d'obtention</label>
+          <input type="date" id="ehc-obtention" value="${h.dateObtention}" />
+        </div>
+        <div class="sfi-field">
+          <label>Date d'expiration</label>
+          <input type="date" id="ehc-expiration" value="${h.dateExpiration}" />
+        </div>
+        <div class="sfi-field">
+          <label>Rappel avant échéance</label>
+          <select id="ehc-rappel">
+            <option value="3" ${h.rappelMois===3?'selected':''}>3 mois avant</option>
+            <option value="6" ${!h.rappelMois || h.rappelMois===6?'selected':''}>6 mois avant</option>
+            <option value="9" ${h.rappelMois===9?'selected':''}>9 mois avant</option>
+            <option value="12" ${h.rappelMois===12?'selected':''}>12 mois avant</option>
+          </select>
+        </div>
+        <div class="sfi-field">
+          <label>Commentaire</label>
+          <textarea id="ehc-commentaire">${escapeHtml(h.commentaire || '')}</textarea>
+        </div>
+        <div class="sfi-sheet-actions">
+          <button class="sfi-btn ghost" data-close-sheet>Annuler</button>
+          <button class="sfi-btn primary" data-save-hab-cycle>Enregistrer</button>
+        </div>
+        <button class="sfi-btn ghost" style="width:100%; margin-top:8px; color:var(--danger);" data-delete-hab-cycle="${h.id}">Supprimer ce cycle</button>
+      </div>
+    </div>`;
+  }
+
+  function renderDetail() {
+    const e = db.equipements.find(x => x.id === state.currentId);
+    if (!e) { state.view = 'types'; return renderTypes(); }
+    const s = statusOf(e);
+    const lv = lastVerif(e.id);
+    const history = db.interventions
+      .filter(i => i.equipementId === e.id)
+      .sort((a,b) => b.date.localeCompare(a.date));
+
+    const isPerso = e.category === 'personnel';
+    const historyHtml = history.length === 0
+      ? `<div class="sfi-empty">Aucun historique pour cet équipement.</div>`
+      : history.map(h => `
+        <div class="sfi-history-item ${h.type === 'panne' ? 'panne' : 'ok'}">
+          <div class="h-date">${fmtDate(h.date)}</div>
+          <div class="h-label">${h.type === 'verif_ok' ? (isPerso ? 'Formation effectuée' : 'Vérification OK') : h.type === 'panne' ? (isPerso ? 'Formation à renouveler' : 'Panne signalée') : 'Réparation'}</div>
+          ${h.commentaire ? `<div class="h-comment">${escapeHtml(h.commentaire)}</div>` : ''}
+          ${h.photoKey ? `<button class="sfi-photo-link" data-view-photo="${h.photoKey}">${cameraIcon()} Voir la photo</button>` : ''}
+          <div class="h-author">${escapeHtml(h.auteur || '')} <button class="sfi-photo-link" style="margin-left:6px;" data-edit-history="${h.id}">Modifier</button></div>
+        </div>`).join('');
+
+    root.innerHTML = `
+      <div class="sfi-detail-header">
+        <button class="sfi-back" data-back>${backIcon()} Retour</button>
+        <h2>${escapeHtml(e.nom)}</h2>
+        <p>${e.id} · ${escapeHtml(e.zone)} · ${escapeHtml(e.type)}${state.session.role === 'admin' ? ' · ' + escapeHtml(e.magasin || '—') : ''}</p>
+        <button class="sfi-photo-link" style="color:#B8B2A2; margin-top:4px;" data-edit-info>Modifier le nom / la zone${state.session.role === 'admin' ? ' / le magasin' : ''}</button>
+      </div>
+      <div class="sfi-detail-body">
+        <div class="sfi-badge st-${s}" style="display:inline-block; margin-bottom: 6px;">${statusLabel(s)}</div>
+        <div style="font-size:12.5px; color: var(--ink-soft); margin-bottom: 4px;">
+          ${lv ? 'Dernière vérification : ' + fmtDate(lv.date) : 'Jamais vérifié'}
+        </div>
+        <div style="font-size:12.5px; color: var(--ink-soft); margin-bottom: 10px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+          <span>Contrôle <b>${formatFreq(e.freq)}</b> · rappel <b>${Math.min(e.rappelMois != null ? e.rappelMois : 6, e.freq / 2)}</b> mois avant</span>
+          <button class="sfi-photo-link" data-edit-freq>Modifier</button>
+        </div>
+
+        <div class="sfi-section-label">Actions</div>
+        <div class="sfi-action-row">
+          <button class="sfi-action-btn ok" data-verif-ok>${checkIcon()} ${e.category === 'personnel' ? 'Formation à jour' : 'Vérification OK'}</button>
+          <button class="sfi-action-btn panne" data-panne>${warnIcon()} ${e.category === 'personnel' ? 'Formation à renouveler' : 'Signaler une panne'}</button>
+        </div>
+
+        <div class="sfi-section-label">Historique</div>
+        ${historyHtml}
+      </div>
+      ${state.sheet === 'verif' ? renderVerifSheet(e) : ''}
+      ${state.sheet === 'panne' ? renderPanneSheet(e) : ''}
+      ${state.sheet === 'edit-freq' ? renderEditFreqSheet(e) : ''}
+      ${state.sheet === 'edit-info' ? renderEditInfoSheet(e) : ''}
+      ${state.sheet === 'edit-history' ? renderEditHistorySheet(history.find(h => h.id === state.editingHistoryId)) : ''}
+      ${lightboxHtml()}
+      ${state.toast ? `<div class="sfi-toast">${escapeHtml(state.toast)}</div>` : ''}
+    `;
+  }
+
+  function renderAddEquipSheet() {
+    return `
+    <div class="sfi-overlay" data-close-sheet>
+      <div class="sfi-sheet" onclick="event.stopPropagation()">
+        <h3>Nouvel équipement</h3>
+        <div class="sfi-field">
+          <label>Identifiant (étiquette tag)</label>
+          <input type="text" id="f-id" placeholder="EX : EXT-06" />
+        </div>
+        <div class="sfi-field">
+          <label>Nom</label>
+          <input type="text" id="f-nom" placeholder="Extincteur poudre 6kg" />
+        </div>
+        <div class="sfi-field">
+          <label>Type</label>
+          <select id="f-type">
+            ${db.types.map(t => `<option value="${t.label}" ${state.currentType === t.label ? 'selected' : ''}>${t.label}</option>`).join('')}
+          </select>
+        </div>
+        <div class="sfi-field">
+          <label>Zone</label>
+          <select id="f-zone">
+            ${ZONES.map(z => `<option value="${z}">${z}</option>`).join('')}
+          </select>
+        </div>
+        ${state.session.role === 'admin' ? `
+        <div class="sfi-field">
+          <label>Magasin</label>
+          <select id="f-magasin">
+            ${MAGASINS.map(m => `<option value="${m}" ${state.adminScope === m ? 'selected' : ''}>${m}</option>`).join('')}
+          </select>
+        </div>` : ''}
+        <div class="sfi-sheet-actions">
+          <button class="sfi-btn ghost" data-close-sheet>Annuler</button>
+          <button class="sfi-btn primary" data-save-equip>Ajouter</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function renderScanSheet() {
+    return `
+    <div class="sfi-overlay" data-close-sheet>
+      <div class="sfi-sheet" onclick="event.stopPropagation()">
+        <h3>Simuler un scan NFC</h3>
+        <p style="font-size:12.5px; color:var(--ink-soft); margin-top:-8px; margin-bottom:14px; line-height:1.5;">
+          Sur le terrain, chaque tag NFC encode un lien qui ouvre directement la fiche de l'équipement au tap du téléphone. Ici, saisis l'identifiant pour simuler ce tap.
+        </p>
+        <div class="sfi-field">
+          <label>Identifiant équipement</label>
+          <input type="text" id="f-scan" placeholder="EX : EXT-01" />
+        </div>
+        <div class="sfi-sheet-actions">
+          <button class="sfi-btn ghost" data-close-sheet>Annuler</button>
+          <button class="sfi-btn primary" data-do-scan>Ouvrir</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function photoFieldHtml() {
+    return `
+        <div class="sfi-field">
+          <label>Photo (optionnel)</label>
+          ${pendingPhoto
+            ? `<div class="sfi-photo-preview"><img src="${pendingPhoto}" /><button type="button" class="sfi-photo-remove" data-remove-photo>&times;</button></div>`
+            : `
+            <div style="display:flex; gap:8px;">
+              <button type="button" class="sfi-btn ghost" style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px;" data-take-photo>${cameraIcon()} Prendre une photo</button>
+              <button type="button" class="sfi-btn ghost" style="flex:1;" data-choose-photo>Depuis la galerie</button>
+            </div>
+            <input type="file" accept="image/*" capture="environment" id="f-photo-camera" style="display:none" />
+            <input type="file" accept="image/*" id="f-photo-gallery" style="display:none" />
+            `}
+        </div>`;
+  }
+
+  function renderEditFreqSheet(e) {
+    const presets = [0.25, 1, 3, 6, 12, 24, 36, 60];
+    const currentRappel = e.rappelMois != null ? e.rappelMois : 6;
+    return `
+    <div class="sfi-overlay" data-close-sheet>
+      <div class="sfi-sheet" onclick="event.stopPropagation()">
+        <h3>Fréquence de contrôle — ${escapeHtml(e.nom)}</h3>
+        <p style="font-size:12.5px; color:var(--ink-soft); margin-top:-8px; margin-bottom:14px;">
+          Tous les combien de temps ce contrôle doit-il être refait ?
+        </p>
+        <div class="sfi-field">
+          <label>Fréquence</label>
+          <select id="ef-freq">
+            ${presets.map(p => `<option value="${p}" ${e.freq === p ? 'selected' : ''}>${p === 0.25 ? 'Chaque semaine' : (p === 1 ? 'Tous les mois' : 'Tous les ' + p + ' mois')}</option>`).join('')}
+          </select>
+        </div>
+        <div class="sfi-field">
+          <label>Rappel avant échéance</label>
+          <select id="ef-rappel">
+            ${[1,3,6,9,12].map(r => `<option value="${r}" ${currentRappel === r ? 'selected' : ''}>${r} mois avant</option>`).join('')}
+          </select>
+          <p style="font-size:11px; color:var(--ink-soft); margin-top:6px; line-height:1.4;">
+            Automatiquement réduit si le rappel dépasse la moitié du cycle (ex : pas de rappel à 6 mois sur un contrôle hebdomadaire).
+          </p>
+        </div>
+        <div class="sfi-sheet-actions">
+          <button class="sfi-btn ghost" data-close-sheet>Annuler</button>
+          <button class="sfi-btn primary" data-save-freq>Enregistrer</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function renderEditInfoSheet(e) {
+    return `
+    <div class="sfi-overlay" data-close-sheet>
+      <div class="sfi-sheet" onclick="event.stopPropagation()">
+        <h3>Modifier la fiche</h3>
+        <div class="sfi-field">
+          <label>Nom</label>
+          <input type="text" id="ei-nom" value="${escapeHtml(e.nom)}" />
+        </div>
+        <div class="sfi-field">
+          <label>Zone</label>
+          <select id="ei-zone">
+            ${ZONES.map(z => `<option value="${z}" ${e.zone === z ? 'selected' : ''}>${z}</option>`).join('')}
+          </select>
+        </div>
+        ${state.session.role === 'admin' ? `
+        <div class="sfi-field">
+          <label>Magasin</label>
+          <select id="ei-magasin">
+            ${MAGASINS.map(m => `<option value="${m}" ${e.magasin === m ? 'selected' : ''}>${m}</option>`).join('')}
+          </select>
+        </div>` : ''}
+        <p style="font-size:11px; color:var(--ink-soft); margin-top:-6px; margin-bottom:4px;">
+          Identifiant (${e.id}) et type (${escapeHtml(e.type)}) ne sont pas modifiables — supprime et recrée la fiche si besoin de les changer.
+        </p>
+        <div class="sfi-sheet-actions">
+          <button class="sfi-btn ghost" data-close-sheet>Annuler</button>
+          <button class="sfi-btn primary" data-save-info>Enregistrer</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function renderEditHistorySheet(h) {
+    if (!h) return '';
+    return `
+    <div class="sfi-overlay" data-close-sheet>
+      <div class="sfi-sheet" onclick="event.stopPropagation()">
+        <h3>Modifier cette entrée</h3>
+        <div class="sfi-field">
+          <label>Type</label>
+          <select id="eh-type">
+            <option value="verif_ok" ${h.type === 'verif_ok' ? 'selected' : ''}>Vérification OK</option>
+            <option value="panne" ${h.type === 'panne' ? 'selected' : ''}>Panne / anomalie</option>
+          </select>
+        </div>
+        <div class="sfi-field">
+          <label>Date</label>
+          <input type="date" id="eh-date" value="${h.date}" />
+        </div>
+        <div class="sfi-field">
+          <label>Commentaire</label>
+          <textarea id="eh-commentaire">${escapeHtml(h.commentaire || '')}</textarea>
+        </div>
+        <div class="sfi-field">
+          <label>Auteur</label>
+          <input type="text" id="eh-auteur" value="${escapeHtml(h.auteur || '')}" />
+        </div>
+        <div class="sfi-sheet-actions">
+          <button class="sfi-btn ghost" data-close-sheet>Annuler</button>
+          <button class="sfi-btn primary" data-save-history>Enregistrer</button>
+        </div>
+        <button class="sfi-btn ghost" style="width:100%; margin-top:8px; color:var(--danger);" data-delete-history="${h.id}">Supprimer cette entrée</button>
+      </div>
+    </div>`;
+  }
+
+  function renderVerifSheet(e) {
+    return `
+    <div class="sfi-overlay" data-close-sheet>
+      <div class="sfi-sheet" onclick="event.stopPropagation()">
+        <h3>Vérification — ${escapeHtml(e.nom)}</h3>
+        <div class="sfi-field">
+          <label>Commentaire (optionnel)</label>
+          <textarea id="f-commentaire" placeholder="RAS, pression correcte…"></textarea>
+        </div>
+        ${photoFieldHtml()}
+        <div class="sfi-field">
+          <label>Ton nom</label>
+          <input type="text" id="f-auteur" placeholder="Prénom Nom" />
+        </div>
+        <div class="sfi-sheet-actions">
+          <button class="sfi-btn ghost" data-close-sheet>Annuler</button>
+          <button class="sfi-btn primary" data-confirm-verif>Valider</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function renderPanneSheet(e) {
+    return `
+    <div class="sfi-overlay" data-close-sheet>
+      <div class="sfi-sheet" onclick="event.stopPropagation()">
+        <h3>Signaler une panne — ${escapeHtml(e.nom)}</h3>
+        <div class="sfi-field">
+          <label>Description du problème</label>
+          <textarea id="f-commentaire" placeholder="Décris la panne constatée…"></textarea>
+        </div>
+        ${photoFieldHtml()}
+        <div class="sfi-field">
+          <label>Ton nom</label>
+          <input type="text" id="f-auteur" placeholder="Prénom Nom" />
+        </div>
+        <div class="sfi-sheet-actions">
+          <button class="sfi-btn ghost" data-close-sheet>Annuler</button>
+          <button class="sfi-btn primary" style="background:var(--danger);" data-confirm-panne>Signaler</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // ---------- Icons ----------
+  function weldomRoofIcon() {
+    return `<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 11L12 4L21 11" stroke="#F5A300" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  }
+  function scanIcon() {
+    return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1C1B19" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h3"/><path d="M17 4h3v3"/><path d="M20 17v3h-3"/><path d="M7 20H4v-3"/><path d="M4 12h16" stroke-dasharray="2 2"/></svg>`;
+  }
+  function backIcon() {
+    return `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F5A300" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>`;
+  }
+  function checkIcon() {
+    return `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2F7D45" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>`;
+  }
+  function warnIcon() {
+    return `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C43D3D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>`;
+  }
+  function cameraIcon() {
+    return `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C97F00" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`;
+  }
+
+  function lightboxHtml() {
+    if (!lightboxPhoto) return '';
+    if (lightboxPhoto === 'loading') {
+      return `<div class="sfi-lightbox" data-close-lightbox><div style="color:#fff; font-size:13px;">Chargement…</div></div>`;
+    }
+    return `
+    <div class="sfi-lightbox" data-close-lightbox>
+      <button class="sfi-lightbox-close" data-close-lightbox>&times;</button>
+      <img src="${lightboxPhoto}" onclick="event.stopPropagation()" />
+    </div>`;
+  }
+
+  // ---------- Events ----------
+  function bindGlobalEvents() {
+    root.querySelectorAll('[data-tab]').forEach(el => {
+      el.onclick = () => { state.tab = el.getAttribute('data-tab'); render(); };
+    });
+    const searchInput = root.querySelector('[data-search]');
+    if (searchInput) {
+      searchInput.oninput = (ev) => { state.search = ev.target.value; render(); searchAfterRender('[data-search]'); };
+    }
+    const typeSearchInput = root.querySelector('[data-type-search]');
+    if (typeSearchInput) {
+      typeSearchInput.oninput = (ev) => { state.typeSearch = ev.target.value; render(); searchAfterRender('[data-type-search]'); };
+    }
+    root.querySelectorAll('[data-open-type]').forEach(el => {
+      el.onclick = () => {
+        const label = el.getAttribute('data-open-type');
+        const t = db.types.find(x => x.label === label);
+        state.currentType = label;
+        state.view = (t && t.category === 'personnel') ? 'habList' : 'list';
+        state.tab = 'tous';
+        state.search = '';
+        render();
+      };
+    });
+    root.querySelectorAll('[data-open]').forEach(el => {
+      el.onclick = () => { state.currentId = el.getAttribute('data-open'); state.view = 'detail'; render(); };
+    });
+    const backBtn = root.querySelector('[data-back]');
+    if (backBtn) backBtn.onclick = () => { state.view = 'list'; state.currentId = null; render(); };
+    const backToTypesBtn = root.querySelector('[data-back-to-types]');
+    if (backToTypesBtn) backToTypesBtn.onclick = () => { state.view = 'types'; state.currentType = null; state.currentId = null; state.currentCollab = null; state.statusFilter = null; state.search = ''; render(); };
+    const statusFilterEls = root.querySelectorAll('[data-status-filter]');
+    if (statusFilterEls) statusFilterEls.forEach(el => {
+      el.onclick = () => {
+        state.statusFilter = el.getAttribute('data-status-filter');
+        state.view = 'statusList';
+        state.search = '';
+        render();
+      };
+    });
+    const logoutBtn = root.querySelector('[data-logout]');
+    if (logoutBtn) logoutBtn.onclick = async () => {
+      await clearSession();
+      state.adminScope = null;
+      state.view = 'types';
+      state.currentType = null; state.currentId = null; state.currentCollab = null;
+      render();
+    };
+    const changeStoreBtn = root.querySelector('[data-change-store]');
+    if (changeStoreBtn) changeStoreBtn.onclick = () => {
+      state.adminScope = null;
+      state.view = 'types';
+      state.currentType = null; state.currentId = null; state.currentCollab = null;
+      render();
+    };
+    const openAccountsBtn = root.querySelector('[data-open-accounts]');
+    if (openAccountsBtn) openAccountsBtn.onclick = () => { state.view = 'accounts'; render(); };
+    const openCategoriesBtn = root.querySelector('[data-open-categories]');
+    if (openCategoriesBtn) openCategoriesBtn.onclick = () => { state.view = 'categories'; render(); };
+
+    const newAccountBtn = root.querySelector('[data-new-account]');
+    if (newAccountBtn) newAccountBtn.onclick = () => { state.sheet = 'add-account'; render(); };
+
+    const newCategoryBtn = root.querySelector('[data-new-category]');
+    if (newCategoryBtn) newCategoryBtn.onclick = () => { state.sheet = 'add-category'; render(); };
+    root.querySelectorAll('[data-edit-category]').forEach(el => {
+      el.onclick = () => { state.editingCategoryLabel = el.getAttribute('data-edit-category'); state.sheet = 'edit-category'; render(); };
+    });
+    const saveCategoryBtn = root.querySelector('[data-save-category]');
+    if (saveCategoryBtn) saveCategoryBtn.onclick = async () => {
+      const labelInput = root.querySelector('#cat-label');
+      const label = labelInput.value.trim();
+      const freq = parseFloat(root.querySelector('#cat-freq').value);
+      const rappelDefaut = parseInt(root.querySelector('#cat-rappel').value, 10);
+      const category = root.querySelector('#cat-category').value;
+      const originalLabel = labelInput.getAttribute('data-original-label');
+      if (!label) { showToast('Le nom est requis.'); return; }
+      if (!originalLabel && db.types.some(t => t.label === label)) { showToast('Cette catégorie existe déjà.'); return; }
+      if (originalLabel) {
+        const t = db.types.find(x => x.label === originalLabel);
+        if (t) {
+          t.label = label; t.freq = freq; t.rappelDefaut = rappelDefaut;
+          if (originalLabel !== label) {
+            db.equipements.forEach(e => { if (e.type === originalLabel) e.type = label; });
+            db.habilitations.forEach(h => { if (h.type === originalLabel) h.type = label; });
+          }
+        }
+      } else {
+        db.types.push({label, freq, category, rappelDefaut});
+      }
+      state.sheet = null;
+      state.editingCategoryLabel = null;
+      await saveDB();
+      showToast('Catégorie enregistrée.');
+    };
+    root.querySelectorAll('[data-delete-category]').forEach(el => {
+      el.onclick = () => { state.editingCategoryLabel = el.getAttribute('data-delete-category'); state.sheet = 'confirm-delete-category'; render(); };
+    });
+    const confirmDeleteCategoryBtn = root.querySelector('[data-confirm-delete-category]');
+    if (confirmDeleteCategoryBtn) confirmDeleteCategoryBtn.onclick = async () => {
+      db.types = db.types.filter(t => t.label !== state.editingCategoryLabel);
+      state.sheet = null;
+      state.editingCategoryLabel = null;
+      await saveDB();
+      showToast('Catégorie supprimée.');
+    };
+
+    const resetDemoBtn = root.querySelector('[data-reset-demo]');
+    if (resetDemoBtn) resetDemoBtn.onclick = () => { state.sheet = 'confirm-reset-demo'; render(); };
+    const confirmResetBtn = root.querySelector('[data-confirm-reset-demo]');
+    if (confirmResetBtn) confirmResetBtn.onclick = async () => {
+      seed();
+      await saveDB();
+      state.sheet = null;
+      showToast('Données de démo rechargées.');
+      render();
+    };
+
+    const importHesingueBtn = root.querySelector('[data-import-hesingue]');
+    if (importHesingueBtn) importHesingueBtn.onclick = () => { state.sheet = 'confirm-import-hesingue'; render(); };
+    const confirmImportBtn = root.querySelector('[data-confirm-import-hesingue]');
+    if (confirmImportBtn) confirmImportBtn.onclick = async () => {
+      importHesingueReel();
+      await saveDB();
+      state.sheet = null;
+      state.adminScope = 'Hésingue';
+      state.view = 'types';
+      state.currentType = null; state.currentId = null; state.currentCollab = null;
+      showToast('Données Hésingue importées.');
+      render();
+    };
+
+    const roleSelect = root.querySelector('#a-role');
+    if (roleSelect) {
+      const magField = root.querySelector('#a-magasin-field');
+      const toggle = () => { magField.style.display = roleSelect.value === 'admin' ? 'none' : 'block'; };
+      roleSelect.onchange = toggle;
+      toggle();
+    }
+
+    const saveAccountBtn = root.querySelector('[data-save-account]');
+    if (saveAccountBtn) saveAccountBtn.onclick = async () => {
+      const username = root.querySelector('#a-user').value.trim().toLowerCase();
+      const pin = root.querySelector('#a-pin').value.trim();
+      const role = root.querySelector('#a-role').value;
+      const magasin = role === 'admin' ? null : root.querySelector('#a-magasin').value;
+      if (!username || !pin) { showToast('Identifiant et code requis.'); return; }
+      if (db.accounts.some(a => a.username === username)) { showToast('Cet identifiant existe déjà.'); return; }
+      db.accounts.push({username, pin, role, magasin});
+      state.sheet = null;
+      await saveDB();
+      showToast('Compte créé.');
+    };
+
+    root.querySelectorAll('[data-delete-account]').forEach(el => {
+      el.onclick = async () => {
+        const username = el.getAttribute('data-delete-account');
+        db.accounts = db.accounts.filter(a => a.username !== username);
+        await saveDB();
+        showToast('Compte supprimé.');
+      };
+    });
+    const backToHabListBtn = root.querySelector('[data-back-to-hablist]');
+    if (backToHabListBtn) backToHabListBtn.onclick = () => { state.view = 'habList'; state.currentCollab = null; render(); };
+
+    root.querySelectorAll('[data-open-collab]').forEach(el => {
+      el.onclick = () => { state.currentCollab = el.getAttribute('data-open-collab'); state.view = 'habDetail'; render(); };
+    });
+
+    const newHabBtn = root.querySelector('[data-new-hab]');
+    if (newHabBtn) newHabBtn.onclick = () => { state.sheet = 'add-hab'; render(); };
+
+    const saveHabBtn = root.querySelector('[data-save-hab]');
+    if (saveHabBtn) saveHabBtn.onclick = async () => {
+      const collaborateur = root.querySelector('#h-collab').value.trim();
+      const dateObtention = root.querySelector('#h-obtention').value;
+      const dateExpiration = root.querySelector('#h-expiration').value;
+      const rappelMois = parseInt(root.querySelector('#h-rappel').value, 10);
+      const commentaire = root.querySelector('#h-commentaire').value.trim();
+      const magasinSel = root.querySelector('#h-magasin');
+      const magasin = magasinSel ? magasinSel.value : state.session.magasin;
+      if (!collaborateur || !dateObtention || !dateExpiration) { showToast('Nom et dates requis.'); return; }
+      db.habilitations.push({
+        id: 'h' + Date.now(),
+        type: state.currentType,
+        collaborateur, magasin, dateObtention, dateExpiration, rappelMois, commentaire,
+        auteur: ''
+      });
+      state.sheet = null;
+      await saveDB();
+      showToast('Collaborateur ajouté.');
+    };
+
+    const renewHabBtn = root.querySelector('[data-renew-hab]');
+    if (renewHabBtn) renewHabBtn.onclick = () => { state.sheet = 'renew-hab'; render(); };
+
+    const confirmRenewBtn = root.querySelector('[data-confirm-renew]');
+    if (confirmRenewBtn) confirmRenewBtn.onclick = async () => {
+      const dateObtention = root.querySelector('#h-obtention').value;
+      const dateExpiration = root.querySelector('#h-expiration').value;
+      const rappelMois = parseInt(root.querySelector('#h-rappel').value, 10);
+      const commentaire = root.querySelector('#h-commentaire').value.trim();
+      if (!dateObtention || !dateExpiration) { showToast('Dates requises.'); return; }
+      const prev = habHistory(state.currentType, state.currentCollab)[0];
+      db.habilitations.push({
+        id: 'h' + Date.now(),
+        type: state.currentType,
+        collaborateur: state.currentCollab,
+        magasin: prev ? prev.magasin : state.session.magasin,
+        dateObtention, dateExpiration, rappelMois, commentaire,
+        auteur: ''
+      });
+      state.sheet = null;
+      await saveDB();
+      showToast('Renouvellement enregistré.');
+    };
+
+    const editCollabNameBtn = root.querySelector('[data-edit-collab-name]');
+    if (editCollabNameBtn) editCollabNameBtn.onclick = () => { state.sheet = 'edit-collab-name'; render(); };
+    const saveCollabNameBtn = root.querySelector('[data-save-collab-name]');
+    if (saveCollabNameBtn) saveCollabNameBtn.onclick = async () => {
+      const newName = root.querySelector('#ec-collab').value.trim();
+      if (!newName) { showToast('Le nom est requis.'); return; }
+      db.habilitations.forEach(h => {
+        if (h.type === state.currentType && h.collaborateur === state.currentCollab) h.collaborateur = newName;
+      });
+      state.currentCollab = newName;
+      state.sheet = null;
+      await saveDB();
+      showToast('Nom mis à jour.');
+    };
+
+    root.querySelectorAll('[data-edit-hab-cycle]').forEach(el => {
+      el.onclick = () => { state.editingHistoryId = el.getAttribute('data-edit-hab-cycle'); state.sheet = 'edit-hab-cycle'; render(); };
+    });
+    const saveHabCycleBtn = root.querySelector('[data-save-hab-cycle]');
+    if (saveHabCycleBtn) saveHabCycleBtn.onclick = async () => {
+      const dateObtention = root.querySelector('#ehc-obtention').value;
+      const dateExpiration = root.querySelector('#ehc-expiration').value;
+      const rappelMois = parseInt(root.querySelector('#ehc-rappel').value, 10);
+      const commentaire = root.querySelector('#ehc-commentaire').value.trim();
+      if (!dateObtention || !dateExpiration) { showToast('Dates requises.'); return; }
+      const h = db.habilitations.find(x => x.id === state.editingHistoryId);
+      if (h) { h.dateObtention = dateObtention; h.dateExpiration = dateExpiration; h.rappelMois = rappelMois; h.commentaire = commentaire; }
+      state.sheet = null;
+      state.editingHistoryId = null;
+      await saveDB();
+      showToast('Cycle mis à jour.');
+    };
+    const deleteHabCycleBtn = root.querySelector('[data-delete-hab-cycle]');
+    if (deleteHabCycleBtn) deleteHabCycleBtn.onclick = async () => {
+      const id = deleteHabCycleBtn.getAttribute('data-delete-hab-cycle');
+      db.habilitations = db.habilitations.filter(h => h.id !== id);
+      state.sheet = null;
+      state.editingHistoryId = null;
+      await saveDB();
+      showToast('Cycle supprimé.');
+    };
+
+    const newEquipBtn = root.querySelector('[data-new-equip]');
+    if (newEquipBtn) newEquipBtn.onclick = () => { state.sheet = 'add-equip'; render(); };
+    const scanBtn = root.querySelector('[data-scan]');
+    if (scanBtn) scanBtn.onclick = () => { state.sheet = 'scan'; render(); };
+
+    root.querySelectorAll('[data-close-sheet]').forEach(el => {
+      el.onclick = () => { state.sheet = null; render(); };
+    });
+
+    const saveEquipBtn = root.querySelector('[data-save-equip]');
+    if (saveEquipBtn) saveEquipBtn.onclick = async () => {
+      const id = root.querySelector('#f-id').value.trim();
+      const nom = root.querySelector('#f-nom').value.trim();
+      const type = root.querySelector('#f-type').value;
+      const zone = root.querySelector('#f-zone').value;
+      const magasinSel = root.querySelector('#f-magasin');
+      const magasin = magasinSel ? magasinSel.value : state.session.magasin;
+      if (!id || !nom) { showToast('Identifiant et nom requis.'); return; }
+      if (db.equipements.some(e => e.id === id)) { showToast('Cet identifiant existe déjà.'); return; }
+      db.equipements.push({id, nom, type, zone, magasin, freq: typeFreq(type), rappelMois: typeRappel(type), category: typeCategory(type), createdAt: new Date().toISOString().slice(0,10)});
+      state.sheet = null;
+      await saveDB();
+      showToast('Équipement ajouté.');
+    };
+
+    const doScanBtn = root.querySelector('[data-do-scan]');
+    if (doScanBtn) doScanBtn.onclick = () => {
+      const id = root.querySelector('#f-scan').value.trim();
+      const eq = db.equipements.find(e => e.id.toLowerCase() === id.toLowerCase());
+      if (!eq) { showToast('Identifiant inconnu.'); return; }
+      state.currentId = eq.id;
+      state.currentType = eq.type;
+      if (state.session.role === 'admin') state.adminScope = eq.magasin;
+      state.view = 'detail';
+      state.sheet = null;
+      render();
+    };
+
+    const verifOkBtn = root.querySelector('[data-verif-ok]');
+    if (verifOkBtn) verifOkBtn.onclick = () => { pendingPhoto = null; state.sheet = 'verif'; render(); };
+    const panneBtn = root.querySelector('[data-panne]');
+    if (panneBtn) panneBtn.onclick = () => { pendingPhoto = null; state.sheet = 'panne'; render(); };
+    const editFreqBtn = root.querySelector('[data-edit-freq]');
+    if (editFreqBtn) editFreqBtn.onclick = () => { state.sheet = 'edit-freq'; render(); };
+    const saveFreqBtn = root.querySelector('[data-save-freq]');
+    if (saveFreqBtn) saveFreqBtn.onclick = async () => {
+      const freq = parseFloat(root.querySelector('#ef-freq').value);
+      const rappelMois = parseInt(root.querySelector('#ef-rappel').value, 10);
+      const eq = db.equipements.find(x => x.id === state.currentId);
+      if (eq) { eq.freq = freq; eq.rappelMois = rappelMois; }
+      state.sheet = null;
+      await saveDB();
+      showToast('Fréquence mise à jour.');
+    };
+
+    const editInfoBtn = root.querySelector('[data-edit-info]');
+    if (editInfoBtn) editInfoBtn.onclick = () => { state.sheet = 'edit-info'; render(); };
+    const saveInfoBtn = root.querySelector('[data-save-info]');
+    if (saveInfoBtn) saveInfoBtn.onclick = async () => {
+      const nom = root.querySelector('#ei-nom').value.trim();
+      const zone = root.querySelector('#ei-zone').value;
+      const magasinSel = root.querySelector('#ei-magasin');
+      const eq = db.equipements.find(x => x.id === state.currentId);
+      if (!nom) { showToast('Le nom est requis.'); return; }
+      if (eq) {
+        eq.nom = nom;
+        eq.zone = zone;
+        if (magasinSel) eq.magasin = magasinSel.value;
+      }
+      state.sheet = null;
+      await saveDB();
+      showToast('Fiche mise à jour.');
+    };
+
+    root.querySelectorAll('[data-edit-history]').forEach(el => {
+      el.onclick = () => { state.editingHistoryId = el.getAttribute('data-edit-history'); state.sheet = 'edit-history'; render(); };
+    });
+    const saveHistoryBtn = root.querySelector('[data-save-history]');
+    if (saveHistoryBtn) saveHistoryBtn.onclick = async () => {
+      const type = root.querySelector('#eh-type').value;
+      const date = root.querySelector('#eh-date').value;
+      const commentaire = root.querySelector('#eh-commentaire').value.trim();
+      const auteur = root.querySelector('#eh-auteur').value.trim();
+      if (!date) { showToast('La date est requise.'); return; }
+      const interv = db.interventions.find(i => i.id === state.editingHistoryId);
+      if (interv) { interv.type = type; interv.date = date; interv.commentaire = commentaire; interv.auteur = auteur; }
+      state.sheet = null;
+      state.editingHistoryId = null;
+      await saveDB();
+      showToast('Entrée mise à jour.');
+    };
+    const deleteHistoryBtn = root.querySelector('[data-delete-history]');
+    if (deleteHistoryBtn) deleteHistoryBtn.onclick = async () => {
+      const id = deleteHistoryBtn.getAttribute('data-delete-history');
+      db.interventions = db.interventions.filter(i => i.id !== id);
+      state.sheet = null;
+      state.editingHistoryId = null;
+      await saveDB();
+      showToast('Entrée supprimée.');
+    };
+
+    const handlePhotoFile = async (file) => {
+      if (!file) return;
+      showToast('Compression de la photo…');
+      try {
+        pendingPhoto = await compressImage(file);
+        render();
+      } catch (e) {
+        showToast('Photo illisible, réessaie.');
+      }
+    };
+    const cameraInput = root.querySelector('#f-photo-camera');
+    if (cameraInput) cameraInput.onchange = () => handlePhotoFile(cameraInput.files[0]);
+    const galleryInput = root.querySelector('#f-photo-gallery');
+    if (galleryInput) galleryInput.onchange = () => handlePhotoFile(galleryInput.files[0]);
+    const takePhotoBtn = root.querySelector('[data-take-photo]');
+    if (takePhotoBtn) takePhotoBtn.onclick = () => { if (cameraInput) cameraInput.click(); };
+    const choosePhotoBtn = root.querySelector('[data-choose-photo]');
+    if (choosePhotoBtn) choosePhotoBtn.onclick = () => { if (galleryInput) galleryInput.click(); };
+    const removePhotoBtn = root.querySelector('[data-remove-photo]');
+    if (removePhotoBtn) removePhotoBtn.onclick = () => { pendingPhoto = null; render(); };
+
+    root.querySelectorAll('[data-view-photo]').forEach(el => {
+      el.onclick = async () => {
+        const key = el.getAttribute('data-view-photo');
+        lightboxPhoto = 'loading';
+        render();
+        try {
+          const res = await storageAPI.get(key, true);
+          lightboxPhoto = (res && res.value) ? res.value : null;
+        } catch (e) {
+          lightboxPhoto = null;
+          showToast('Photo introuvable.');
+        }
+        render();
+      };
+    });
+    root.querySelectorAll('[data-close-lightbox]').forEach(el => {
+      el.onclick = () => { lightboxPhoto = null; render(); };
+    });
+
+    const confirmVerifBtn = root.querySelector('[data-confirm-verif]');
+    if (confirmVerifBtn) confirmVerifBtn.onclick = async () => {
+      const commentaire = root.querySelector('#f-commentaire').value.trim();
+      const auteur = root.querySelector('#f-auteur').value.trim();
+      const interv = {
+        id: 'i' + Date.now(),
+        equipementId: state.currentId,
+        date: new Date().toISOString().slice(0,10),
+        type: 'verif_ok',
+        commentaire, auteur
+      };
+      if (pendingPhoto) {
+        interv.photoKey = 'photo-' + interv.id;
+        try { await storageAPI.set(interv.photoKey, pendingPhoto, true); } catch (e) { delete interv.photoKey; }
+      }
+      db.interventions.push(interv);
+      pendingPhoto = null;
+      state.sheet = null;
+      await saveDB();
+      showToast('Vérification enregistrée.');
+    };
+
+    const confirmPanneBtn = root.querySelector('[data-confirm-panne]');
+    if (confirmPanneBtn) confirmPanneBtn.onclick = async () => {
+      const commentaire = root.querySelector('#f-commentaire').value.trim();
+      const auteur = root.querySelector('#f-auteur').value.trim();
+      if (!commentaire) { showToast('Décris la panne.'); return; }
+      const interv = {
+        id: 'i' + Date.now(),
+        equipementId: state.currentId,
+        date: new Date().toISOString().slice(0,10),
+        type: 'panne',
+        commentaire, auteur
+      };
+      if (pendingPhoto) {
+        interv.photoKey = 'photo-' + interv.id;
+        try { await storageAPI.set(interv.photoKey, pendingPhoto, true); } catch (e) { delete interv.photoKey; }
+      }
+      db.interventions.push(interv);
+      pendingPhoto = null;
+      state.sheet = null;
+      await saveDB();
+      showToast('Panne signalée.');
+    };
+  }
+
+  function searchAfterRender(selector) {
+    // keep focus on search field after re-render
+    requestAnimationFrame(() => {
+      const el = root.querySelector(selector);
+      if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+    });
+  }
+
+  // Deep-link support: ?equip=EXT-01 opens directly the equipment (simule le tap NFC)
+  function checkDeepLink() {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('equip');
+      const eq = db.equipements.find(e => e.id === id);
+      if (eq) {
+        state.currentId = eq.id;
+        state.currentType = eq.type;
+        if (state.session && state.session.role === 'admin') state.adminScope = eq.magasin;
+        state.view = 'detail';
+      }
+    } catch (e) {}
+  }
+
+  loadSession().then(() => {
+    loadDB().then(() => { revalidateSession(); checkDeepLink(); render(); });
+  });
+})();
+</script>
